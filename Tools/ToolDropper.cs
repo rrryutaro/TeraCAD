@@ -125,7 +125,14 @@ namespace TeraCAD
                     }
                 }
 
-                StampUI.instance.AddStamp(GetStampInfo(tiles));
+                try
+                {
+                    StampUI.instance.AddStamp(GetStampInfo(tiles));
+                }
+                catch (Exception ex)
+                {
+                    Main.NewText("Dropper tool error.", Color.Red);
+                }
             }
         }
 
@@ -268,48 +275,55 @@ namespace TeraCAD
                         textureWall = null;
                         if (tile.active())
                         {
-                            Main.instance.LoadTiles(tile.type);
-                            if (canDrawColorTile(tile))
-                                textureTile = Main.tileAltTexture[tile.type, tile.color()];
-                            else
-                                textureTile = Main.tileTexture[tile.type];
-
-                            Rectangle rect = GetTileRect(tile);
-
-                            if (textureTile.Width < rect.X + rect.Width)
+                            try
                             {
-                                int width2 = textureTile.Width - rect.X;
-                                rect.Width = width2;
+                                Main.instance.LoadTiles(tile.type);
+                                if (canDrawColorTile(tile))
+                                    textureTile = Main.tileAltTexture[tile.type, tile.color()];
+                                else
+                                    textureTile = Main.tileTexture[tile.type];
 
-                                Color[] d = new Color[16 * width2];
+                                Rectangle rect = GetTileRect(tile);
 
-                                textureTile.GetData<Color>(0, rect, d, 0, d.Length);
-
-                                for (int y2 = 0; y2 < 16; y2++)
+                                if (textureTile.Width < rect.X + rect.Width)
                                 {
-                                    for (int x2 = 0; x2 < 16; x2++)
+                                    int width2 = textureTile.Width - rect.X;
+                                    rect.Width = width2;
+
+                                    Color[] d = new Color[16 * width2];
+
+                                    textureTile.GetData<Color>(0, rect, d, 0, d.Length);
+
+                                    for (int y2 = 0; y2 < 16; y2++)
                                     {
-                                        if (x2 < width2)
-                                            dataTile[y2 * 16 + x2] = d[y2 * width2 + x2];
-                                        else
-                                            dataTile[y2 * 16 + x2] = Color.Transparent;
+                                        for (int x2 = 0; x2 < 16; x2++)
+                                        {
+                                            if (x2 < width2)
+                                                dataTile[y2 * 16 + x2] = d[y2 * width2 + x2];
+                                            else
+                                                dataTile[y2 * 16 + x2] = Color.Transparent;
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                if (tile.halfBrick())
-                                    dataTile = GetHalfTile(tile, textureTile);
-                                else if (0 < tile.slope())
-                                    dataTile = GetSlopeTile(tile, textureTile);
                                 else
-                                    textureTile.GetData<Color>(0, rect, dataTile, 0, 256);
+                                {
+                                    if (tile.halfBrick())
+                                        dataTile = GetHalfTile(tile, textureTile);
+                                    else if (0 < tile.slope())
+                                        dataTile = GetSlopeTile(tile, textureTile);
+                                    else
+                                        textureTile.GetData<Color>(0, rect, dataTile, 0, 256);
+                                }
                             }
+                            catch { }
                         }
                         if (0 < tile.wall)
                         {
                             Main.instance.LoadWall(tile.wall);
-                            textureWall = Main.wallTexture[tile.wall];
+                            if (canDrawColorWall(tile) && tile.type < Main.wallAltTexture.GetLength(0) && Main.wallAltTexture[tile.type, tile.wallColor()] != null)
+                                textureWall = Main.wallAltTexture[tile.type, tile.wallColor()];
+                            else
+                                textureWall = Main.wallTexture[tile.wall];
                             textureWall.GetData<Color>(0, new Rectangle(tile.wallFrameX() + 8 , tile.wallFrameY() + (Main.wallFrame[tile.wall] * 180) + 8, 16, 16), dataWall, 0, 256);
                         }
 
@@ -351,6 +365,11 @@ namespace TeraCAD
         {
             return tile != null && tile.color() > 0 && (int)tile.color() < Main.numTileColors && Main.tileAltTextureDrawn[(int)tile.type, (int)tile.color()] && Main.tileAltTextureInit[(int)tile.type, (int)tile.color()];
         }
+        public static bool canDrawColorWall(Tile tile)
+        {
+            return tile != null && tile.wallColor() > 0 && Main.wallAltTextureDrawn[tile.wall, tile.wallColor()] && Main.wallAltTextureInit[tile.wall, tile.wallColor()];
+        }
+
         public static Color[] GetHalfTile(Tile tile, Texture2D textureTile)
         {
             Color[] result = new Color[256];
