@@ -1,0 +1,12 @@
+﻿TeraCAD:
+This Mod aims to make it possible to build like CAD.
+Currently, implementing only the function similar to the paint tools which is the function of the Cheat Sheet.
+
+Creative mode designation is currently not working.
+Plans: if creative mode is false, need to possess items.
+
+*** Acknowledgments ***
+This Mod's code is based on jopojelly's HERO's Mod and Cheat Sheet.
+I am grateful to Mr. jopojelly for publishing a great code.
+In addition, Mod Settings uses Mod Settings Configurator.
+I am grateful to Mr. Flashkirby99 for making the setting of Mod easy.

@@ -1,0 +1,8 @@
+﻿author = R
+version = 0.0.0.1
+displayName = TeraCAD
+homepage = 
+weakReferences = FKTModSettings
+buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, unused\*
+includePDB = false
+languageVersion = 6
