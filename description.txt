@@ -1,9 +1,13 @@
 ﻿TeraCAD:
 This Mod aims to make it possible to build like CAD.
-Currently, implementing only the function similar to the paint tools which is the function of the Cheat Sheet.
 
-Creative mode designation is currently not working.
-Plans: if creative mode is false, need to possess items.
+Currently the use of Paint tools is suspended due to license violation.
+For this reason, we are not currently offering substantial functions, so please be patient.
+
+For the future, we plan to provide the following functions.
+- Draw underline like CAD
+- Place a block with a feeling like drawing a straight line
+ :
 
 *** Acknowledgments ***
 This Mod's code is based on jopojelly's HERO's Mod and Cheat Sheet.

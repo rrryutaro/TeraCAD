@@ -349,10 +349,6 @@ namespace TeraCAD
 
                 result = new Texture2D(Main.graphics.GraphicsDevice, width, height);
                 result.SetData<Color>(data);
-                using (Stream s = File.Open($@"{Main.SavePath}\test.png", FileMode.Create, FileAccess.Write))
-                {
-                    result.SaveAsPng(s, width, height);
-                }
             }
             catch (Exception ex)
             {

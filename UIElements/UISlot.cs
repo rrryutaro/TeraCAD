@@ -19,13 +19,16 @@ namespace TeraCAD.UIElements
 		public static float scale = 1.0f;
         public Texture2D texture;
         public bool isSelect;
+        public string tooltip;
+
         protected SpriteEffects effects = SpriteEffects.None;
 
-        public UISlot(Texture2D texture)
+        public UISlot(Texture2D texture, string tooltip)
 		{
             this.texture = texture;
+            this.tooltip = tooltip;
             SetSlotSize();
-		}
+        }
 
         private void SetSlotSize()
         {
@@ -85,6 +88,8 @@ namespace TeraCAD.UIElements
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X, (int)dimensions.Y, 2, (int)dimensions.Height), color * scale2);
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X + (int)dimensions.Width - 2, (int)dimensions.Y, 2, (int)dimensions.Height), color * scale2);
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X, (int)dimensions.Y + (int)dimensions.Height - 2, (int)dimensions.Width, 2), color * scale2);
+
+                ToolBox.tooltip = tooltip;
             }
         }
     }

@@ -212,15 +212,15 @@ namespace TeraCAD
             //gridTool.Add(btnToolEllipse);
 
             //スタンプツール、ドロッパーツール
-            var slotStamp = new UISlotTool(Main.itemTexture[ItemID.Paintbrush].Resize(menuIconSize), ToolType.Stamp);
-            var slotDropper = new UISlotTool(Main.itemTexture[ItemID.EmptyDropper].Resize(menuIconSize), ToolType.Dropper);
+            var slotStamp = new UISlotTool(Main.itemTexture[ItemID.Paintbrush].Resize(menuIconSize), ToolType.Stamp, "Currently, use is suspended due to license violation.");
+            var slotDropper = new UISlotTool(Main.itemTexture[ItemID.EmptyDropper].Resize(menuIconSize), ToolType.Dropper, "Currently, use is suspended due to license violation.");
             slotStamp.OnClick += (a, b) =>
             {
-                ToolBox.Select(slotStamp);
+                //ToolBox.Select(slotStamp);
             };
             slotDropper.OnClick += (a, b) =>
             {
-                ToolBox.Select(slotDropper);
+                //ToolBox.Select(slotDropper);
             };
             gridTool.Add(slotStamp);
             gridTool.Add(slotDropper);
@@ -264,7 +264,7 @@ namespace TeraCAD
     public class UISlotTool : UISlot
     {
         public ToolType Tool;
-        public UISlotTool(Texture2D texture, ToolType tool) : base (texture)
+        public UISlotTool(Texture2D texture, ToolType tool, string tooltip) : base (texture, tooltip)
         {
             Tool = tool;
         }

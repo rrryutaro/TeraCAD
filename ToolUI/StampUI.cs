@@ -230,7 +230,7 @@ namespace TeraCAD
         public StampInfo stampInfo;
         public int sortOrder;
 
-        public UISlotStamp(StampInfo stampInfo, int sortOrder) : base(stampInfo.Textures.Resize(100))
+        public UISlotStamp(StampInfo stampInfo, int sortOrder) : base(stampInfo.Textures.Resize(100), string.Empty)
         {
             this.stampInfo = stampInfo;
             this.sortOrder = sortOrder;
