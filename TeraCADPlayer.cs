@@ -46,8 +46,9 @@ namespace TeraCAD
         public override void OnEnterWorld(Player player)
         {
             ToolBoxUI.instance.InitializeUI();
-            StampUI.instance.InitializeUI();
-            if (mainUIData != null)
+			ImageUI.instance.InitializeUI();
+
+			if (mainUIData != null)
             {
                 ToolBoxUI.instance.Load(mainUIData);
             }

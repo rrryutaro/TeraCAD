@@ -31,5 +31,5 @@ namespace TeraCAD
         }
 
         public static bool isCreative = false;
-    }
+	}
 }

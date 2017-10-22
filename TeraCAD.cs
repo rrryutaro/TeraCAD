@@ -30,7 +30,7 @@ namespace TeraCAD
 
             if (!Main.dedServ)
             {
-                ToggleHotKeyMain = RegisterHotKey("Toggle NPC Info", "C");
+                ToggleHotKeyMain = RegisterHotKey("Toggle TeraCAD", "C");
                 toolMain = new ToolBox();
 
                 Config.LoadConfig();
@@ -92,8 +92,7 @@ namespace TeraCAD
                 },
                 InterfaceScaleType.UI)
             );
-
-            layerIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+			layerIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
             if (layerIndex != -1)
             {
                 layers.Insert(layerIndex, new LegacyGameInterfaceLayer(

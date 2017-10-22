@@ -18,14 +18,16 @@ namespace TeraCAD.UIElements
 		public Texture2D backgroundTexture = defaultBackgroundTexture;
 		public static float scale = 1.0f;
         public Texture2D texture;
+        public int sortOrder;
         public bool isSelect;
         public string tooltip;
 
         protected SpriteEffects effects = SpriteEffects.None;
 
-        public UISlot(Texture2D texture, string tooltip)
+        public UISlot(Texture2D texture, int sortOrder, string tooltip)
 		{
             this.texture = texture;
+            this.sortOrder = sortOrder;
             this.tooltip = tooltip;
             SetSlotSize();
         }
@@ -42,6 +44,18 @@ namespace TeraCAD.UIElements
             SetSlotSize();
             base.Recalculate();
         }
+
+        public override int CompareTo(object obj)
+        {
+            int result = sortOrder < (obj as UISlot).sortOrder ? -1 : 1;
+            return result;
+        }
+
+		public virtual UISlot Clone()
+		{
+			UISlot result = new UISlot(texture, sortOrder, tooltip);
+			return result;
+		}
 
         protected static Color buffColor(Color newColor, float R, float G, float B, float A)
         {
@@ -88,9 +102,9 @@ namespace TeraCAD.UIElements
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X, (int)dimensions.Y, 2, (int)dimensions.Height), color * scale2);
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X + (int)dimensions.Width - 2, (int)dimensions.Y, 2, (int)dimensions.Height), color * scale2);
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X, (int)dimensions.Y + (int)dimensions.Height - 2, (int)dimensions.Width, 2), color * scale2);
-
-                ToolBox.tooltip = tooltip;
             }
-        }
-    }
+			if (IsMouseHovering)
+				ToolBox.tooltip = tooltip;
+		}
+	}
 }

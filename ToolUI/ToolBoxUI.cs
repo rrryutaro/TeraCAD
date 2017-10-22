@@ -22,7 +22,8 @@ namespace TeraCAD
         internal UIPanel panelTool;
         internal UIGrid gridTool;
         internal UIHoverImageButton closeButton;
-        internal UIImageListButton btnFlyCam;
+		internal UIImageListButton btnRangeRect;
+		internal UIImageListButton btnFlyCam;
         internal UIImageListButton btnRange;
         internal UIImageListButton btnSnap;
         internal UIImageListButton btnPaint;
@@ -65,10 +66,10 @@ namespace TeraCAD
             panelMain.SetPadding(6);
             panelMain.Left.Set(240f, 0f);
             panelMain.Top.Set(400f, 0f);
-            panelMain.Width.Set(160f, 0f);
-			panelMain.MinWidth.Set(160f, 0f);
+            panelMain.Width.Set(165f, 0f);
+			panelMain.MinWidth.Set(165f, 0f);
 			panelMain.MaxWidth.Set(Main.screenWidth, 0f);
-			panelMain.Height.Set(110, 0f);
+			panelMain.Height.Set(142, 0f);
 			panelMain.MinHeight.Set(110, 0f);
 			panelMain.MaxHeight.Set(Main.screenHeight, 0f);
 
@@ -82,8 +83,25 @@ namespace TeraCAD
             float topPos = menuMargin + Main.fontMouseText.MeasureString(caption).Y;
             float leftPos = 0;
 
-            //ボタン：フライカメラ
-            btnFlyCam = new UIImageListButton(
+			//ボタン：レンジ矩形
+			texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/rangeRectangle");
+			btnRangeRect = new UIImageListButton(
+				new List<Texture2D>() { texture, texture },
+				new List<object>() { true, false },
+				new List<string>() { "Display range rectangle: On", "Display range rectangle: Off" },
+				1);
+			btnRangeRect.OnClick += (a, b) =>
+			{
+				btnRangeRect.NextIamge();
+				btnRangeRect.visibilityActive = btnRangeRect.visibilityInactive = btnRangeRect.GetValue<bool>() ? 1.0f : 0.4f;
+			};
+			leftPos += menuMargin;
+			btnRangeRect.Left.Set(leftPos, 0f);
+			btnRangeRect.Top.Set(topPos, 0f);
+			panelMain.Append(btnRangeRect);
+
+			//ボタン：フライカメラ
+			btnFlyCam = new UIImageListButton(
                 new List<Texture2D>() {
                     Main.itemTexture[ItemID.AngelWings].Resize(menuIconSize),
                     Main.itemTexture[ItemID.AngelWings].Resize(menuIconSize),
@@ -97,8 +115,8 @@ namespace TeraCAD
                 FlyCam.Enabled = btnFlyCam.GetValue<bool>();
                 btnFlyCam.visibilityActive = btnFlyCam.visibilityInactive = btnFlyCam.GetValue<bool>() ? 1.0f : 0.4f;
             };
-            leftPos += menuMargin;
-            btnFlyCam.Left.Set(leftPos, 0f);
+			leftPos += menuMargin + menuIconSize;
+			btnFlyCam.Left.Set(leftPos, 0f);
             btnFlyCam.Top.Set(topPos, 0f);
             panelMain.Append(btnFlyCam);
 
@@ -123,17 +141,7 @@ namespace TeraCAD
 
             //ボタン：スナップ
             btnSnap = new UIImageListButton(
-                new List<Texture2D>() {
-                    Main.itemTexture[ItemID.AlphabetStatue7].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue8].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue9].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue4].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue5].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue6].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue1].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue2].Resize(menuIconSize),
-                    Main.itemTexture[ItemID.AlphabetStatue3].Resize(menuIconSize),
-                },
+                (new ImageList(ModLoader.GetMod("TeraCAD").GetTexture("ToolUI/Snap"), 28, 28)).listTexture,
                 new List<object>() {
                     SnapType.TopLeft,
                     SnapType.TopCenter,
@@ -160,6 +168,11 @@ namespace TeraCAD
             btnSnap.OnClick += (a, b) =>
             {
                 btnSnap.NextIamge();
+                ToolBox.snapType = btnSnap.GetValue<SnapType>();
+            };
+            btnSnap.OnRightClick += (a, b) =>
+            {
+                btnSnap.PrevIamge();
                 ToolBox.snapType = btnSnap.GetValue<SnapType>();
             };
             leftPos += menuMargin + menuIconSize;
@@ -190,42 +203,53 @@ namespace TeraCAD
             panelTool.Append(scrollbar);
             gridTool.SetScrollbar(scrollbar);
 
-            ////シェイプツール
-            //texture = ModLoader.GetMod("TeraCAD").GetTexture("ToolUI/ShapeTools");
-            //var btnToolLine = new UISlotTool(texture.Offset(0, 0, 28, 28), ToolType.Line);
-            //var btnToolRect = new UISlotTool(texture.Offset(28, 0, 28, 28), ToolType.Rect);
-            //var btnToolEllipse = new UISlotTool(texture.Offset(56, 0, 28, 28), ToolType.Ellipse);
-            //btnToolLine.OnClick += (a, b) =>
-            //{
-            //    ToolBox.Select(btnToolLine);
-            //};
-            //btnToolRect.OnClick += (a, b) =>
-            //{
-            //    ToolBox.Select(btnToolRect);
-            //};
-            //btnToolEllipse.OnClick += (a, b) =>
-            //{
-            //    ToolBox.Select(btnToolEllipse);
-            //};
-            //gridTool.Add(btnToolLine);
-            //gridTool.Add(btnToolRect);
-            //gridTool.Add(btnToolEllipse);
+            //シェイプツール
+            var imageList = new ImageList(ModLoader.GetMod("TeraCAD").GetTexture("ToolUI/ShapeTools"), 28, 28);
+            //var btnToolSelect = new UISlotTool(imageList[0], ToolType.Select, 1, "Selecct");
+            var btnToolLine = new UISlotTool(imageList[1], ToolType.Line, 1, "Line");
+            var btnToolRect = new UISlotTool(imageList[2], ToolType.Rect, 2, "Recangle");
+            var btnToolCircle = new UISlotTool(imageList[3], ToolType.Circle, 3, "Circle");
+            //btnToolSelect.OnClick += (a, b) => ToolBox.Select(btnToolSelect);
+            btnToolLine.OnClick += (a, b) => ToolBox.Select(btnToolLine);
+            btnToolRect.OnClick += (a, b) => ToolBox.Select(btnToolRect);
+            btnToolCircle.OnClick += (a, b) => ToolBox.Select(btnToolCircle);
+            //gridTool.Add(btnToolSelect);
+            gridTool.Add(btnToolLine);
+            gridTool.Add(btnToolRect);
+            gridTool.Add(btnToolCircle);
 
-            //スタンプツール、ドロッパーツール
-            var slotStamp = new UISlotTool(Main.itemTexture[ItemID.Paintbrush].Resize(menuIconSize), ToolType.Stamp, "Currently, use is suspended due to license violation.");
-            var slotDropper = new UISlotTool(Main.itemTexture[ItemID.EmptyDropper].Resize(menuIconSize), ToolType.Dropper, "Currently, use is suspended due to license violation.");
-            slotStamp.OnClick += (a, b) =>
-            {
-                //ToolBox.Select(slotStamp);
-            };
-            slotDropper.OnClick += (a, b) =>
-            {
-                //ToolBox.Select(slotDropper);
-            };
-            gridTool.Add(slotStamp);
-            gridTool.Add(slotDropper);
+			//イメージツール
+			var btnImage = new UISlotTool(Main.itemTexture[ItemID.TheCursedMan], ToolType.Image, 4, "Image");
+			btnImage.OnClick += (a, b) =>
+			{
+				ToolBox.Select(btnImage);
+				ImageUI.instance.Show = btnImage.isSelect;
+			};
+			gridTool.Add(btnImage);
+
+            ////スタンプツール、ドロッパーツール
+            //var slotStamp = new UISlotTool(Main.itemTexture[ItemID.Paintbrush].Resize(menuIconSize), ToolType.Stamp, "Currently, use is suspended due to license violation.");
+            //var slotDropper = new UISlotTool(Main.itemTexture[ItemID.EmptyDropper].Resize(menuIconSize), ToolType.Dropper, "Currently, use is suspended due to license violation.");
+            //slotStamp.OnClick += (a, b) =>
+            //{
+            //    ToolBox.Select(slotStamp);
+            //};
+            //slotDropper.OnClick += (a, b) =>
+            //{
+            //    ToolBox.Select(slotDropper);
+            //};
+            //gridTool.Add(slotStamp);
+            //gridTool.Add(slotDropper);
 
             updateNeeded = true;
+		}
+
+		internal bool isDisplayRangeRectangle
+		{
+			get
+			{
+				return btnRangeRect.GetValue<bool>();
+			}
 		}
 
 		internal void UpdateGrid()
@@ -264,10 +288,9 @@ namespace TeraCAD
     public class UISlotTool : UISlot
     {
         public ToolType Tool;
-        public UISlotTool(Texture2D texture, ToolType tool, string tooltip) : base (texture, tooltip)
+        public UISlotTool(Texture2D texture, ToolType tool, int sortOrder, string tooltip) : base(texture, sortOrder, tooltip)
         {
             Tool = tool;
         }
-
     }
 }

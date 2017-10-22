@@ -1,16 +1,23 @@
 ﻿TeraCAD:
 This Mod aims to make it possible to build like CAD.
 
-Currently the use of Paint tools is suspended due to license violation.
-For this reason, we are not currently offering substantial functions, so please be patient.
+Currently has the following functions
+- Function to display the effective range of tools such as Pickaxe
+- Function to same as Fly Cam, Infinity Reach of HERO's Mod
+- Function to draw Line, Rectangle, Circle
+- Function to place png images
 
-For the future, we plan to provide the following functions.
-- Draw underline like CAD
-- Place a block with a feeling like drawing a straight line
- :
+*Currently, it does not have the function to save or delete the placed one.
+*Creative mode of config setting is not functioning.
+*In the future, we will be able to place blocks and wallpaper in lines and rectangular areas.
+
+- About Loading Images -
+Place the file "TeraCAD_Image.txt" in the "My Games\Terraria\ModLoader" folder.
+For the contents of the text file, please describe the path of the png file.
+Please save "TeraCAD_Image.txt" with UTF8.
 
 *** Acknowledgments ***
-This Mod's code is based on jopojelly's HERO's Mod and Cheat Sheet.
+This Mod's code is based on jopojelly's HERO's Mod.
 I am grateful to Mr. jopojelly for publishing a great code.
 In addition, Mod Settings uses Mod Settings Configurator.
 I am grateful to Mr. Flashkirby99 for making the setting of Mod easy.

@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.UI;
 using TeraCAD.UIElements;
 using TeraCAD.Tools;
 
@@ -14,8 +17,7 @@ namespace TeraCAD
         Circle,
         Ellipse,
         Arc,
-        Stamp,
-        Dropper
+        Image
     }
 
     public static class ToolTypeUtils
@@ -23,9 +25,11 @@ namespace TeraCAD
         public static bool isShapeTool(this ToolType type)
         {
             bool result =
+                type == ToolType.Select ||
                 type == ToolType.Line ||
                 type == ToolType.Rect ||
-                type == ToolType.Ellipse;
+                type == ToolType.Circle ||
+				type == ToolType.Image;
             return result;
         }
     }
@@ -34,14 +38,15 @@ namespace TeraCAD
 	{
         public static ToolBox instance;
         private ToolBoxUI ui;
+		private ToolImage toolImage;
 
         public FlyCam flyCam;
-        private StampTool toolStamp;
         private ToolShape toolShape;
 
         public static ToolType SelectedTool { get; set; }
         public static UISlotTool SelectedSlot { get; set; }
         public static SnapType snapType;
+        public static int snapDistance = 8;
 
         public static bool FlyCam { get{ return ToolBox.instance.ui.btnFlyCam != null && ToolBox.instance.ui.btnFlyCam.GetValue<bool>(); } }
         public static bool InfinityRange { get { return ToolBox.instance.ui.btnRange != null && ToolBox.instance.ui.btnRange.GetValue<bool>(); } }
@@ -49,16 +54,31 @@ namespace TeraCAD
         public ToolBox() : base(typeof(ToolBoxUI))
 		{
             instance = this;
-            ui = uistate as ToolBoxUI;
-            flyCam = new FlyCam();
+			ui = uistate as ToolBoxUI;
 
-            toolStamp = new StampTool();
+			toolImage = new ToolImage();
+
+			flyCam = new FlyCam();
             toolShape = new ToolShape();
 
             SelectedTool = ToolType.None;
         }
 
-        public static void Select(UISlotTool slot)
+		internal static bool ContainsPoint(Vector2 point)
+		{
+			bool result = false;
+			if (instance.visible)
+			{
+				result = instance.ui.panelMain.ContainsPoint(point);
+			}
+			if (!result && SelectedTool == ToolType.Image && ToolImage.instance.visible)
+			{
+				result = ImageUI.instance.panelMain.ContainsPoint(point);
+			}
+			return result;
+		}
+
+		internal static void Select(UISlotTool slot)
         {
             if (SelectedSlot == slot)
             {
@@ -76,9 +96,6 @@ namespace TeraCAD
                 SelectedSlot = slot;
                 slot.isSelect = true;
             }
-
-            //スタンプツール
-            StampTool.instance.visible = SelectedTool == ToolType.Dropper || SelectedTool == ToolType.Stamp;
         }
 
         internal override void UIUpdate()
@@ -88,14 +105,14 @@ namespace TeraCAD
                 base.UIUpdate();
                 flyCam.Update();
 
-                if (toolStamp.visible)
-                {
-                    toolStamp.UIUpdate();
-                }
                 if (SelectedTool.isShapeTool())
                 {
                     toolShape.Update();
                 }
+				if (SelectedTool == ToolType.Image)
+				{
+					toolImage.UIUpdate();
+				}
             }
             catch (Exception ex)
             {
@@ -108,39 +125,66 @@ namespace TeraCAD
             try
             {
                 base.UIDraw();
-                if (toolStamp.visible)
-                {
-                    toolStamp.UIDraw();
-                }
+				if (visible)
+				{
+					toolShape.DrawShapes();
+				}
                 if (SelectedTool.isShapeTool())
                 {
                     toolShape.Draw();
                 }
-            }
-            catch (Exception ex)
+				if (SelectedTool == ToolType.Image)
+				{
+					toolImage.UIDraw();
+				}
+				if (ui.isDisplayRangeRectangle && !InfinityRange)
+				{
+					DrawRangeRectangle();
+				}
+			}
+			catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 
-        internal override void TooltipDraw()
+		private void DrawRangeRectangle()
+		{
+			try
+			{
+				Player player = Main.LocalPlayer;
+				int rangeX = Player.tileRangeX - 1;
+				int rangeY = Player.tileRangeY - 1;
+				if (0 < player.selectedItem)
+				{
+					rangeX += player.inventory[player.selectedItem].tileBoost;
+					rangeY += player.inventory[player.selectedItem].tileBoost;
+				}
+				Vector2 upperLeft = player.position.Offset(-rangeX * 16, -rangeY * 16).ToTileCoordinates().ToVector2();
+				Vector2 lowerRight = player.position.Offset(player.width + (rangeX + 1) * 16, player.height + rangeY * 16).ToTileCoordinates().ToVector2();
+				Vector2 upperLeftScreen = upperLeft * 16f;
+				Vector2 lowerRightScreen = lowerRight * 16f;
+				upperLeftScreen -= Main.screenPosition;
+				lowerRightScreen -= Main.screenPosition;
+				Vector2 brushSize = lowerRight - upperLeft;
+
+				Rectangle value = new Rectangle(0, 0, 1, 1);
+				Color color = Color.Yellow * 0.6f;
+				Main.spriteBatch.Draw(Main.magicPixel, upperLeftScreen + Vector2.UnitX * -2f, new Microsoft.Xna.Framework.Rectangle?(value), color, 0f, Vector2.Zero, new Vector2(2f, 16f * brushSize.Y), SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(Main.magicPixel, upperLeftScreen + Vector2.UnitX * 16f * brushSize.X, new Microsoft.Xna.Framework.Rectangle?(value), color, 0f, Vector2.Zero, new Vector2(2f, 16f * brushSize.Y), SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(Main.magicPixel, upperLeftScreen + Vector2.UnitY * -2f, new Microsoft.Xna.Framework.Rectangle?(value), color, 0f, Vector2.Zero, new Vector2(16f * brushSize.X, 2f), SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(Main.magicPixel, upperLeftScreen + Vector2.UnitY * 16f * brushSize.Y, new Microsoft.Xna.Framework.Rectangle?(value), color, 0f, Vector2.Zero, new Vector2(16f * brushSize.X, 2f), SpriteEffects.None, 0f);
+			}
+			catch { }
+		}
+
+		internal override void TooltipDraw()
         {
             base.TooltipDraw();
-            if (toolStamp.visible)
-            {
-                toolStamp.TooltipDraw();
-            }
-        }
-
-        internal static bool ContainsPoint(Vector2 point)
-        {
-            bool result =
-                ToolBoxUI.instance.panelMain.ContainsPoint(point) ||
-                ToolBoxUI.instance.panelMain.isDragOrResize ||
-                StampUI.instance.panelMain.ContainsPoint(point) ||
-                StampUI.instance.panelMain.isDragOrResize;
-
-            return result;
-        }
+			if (SelectedTool == ToolType.Image)
+			{
+				toolImage.TooltipDraw();
+			}
+		}
     }
 }

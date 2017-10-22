@@ -79,12 +79,28 @@ namespace TeraCAD.UIElements
             return Index;
         }
 
+        public int PrevIamge()
+        {
+            Index = GetPrevImageIndex();
+            return Index;
+        }
+
         private int GetNextImageIndex()
         {
             int result = Index + 1;
             if (_textures.Count <= result)
             {
                 result = 0;
+            }
+            return result;
+        }
+
+        private int GetPrevImageIndex()
+        {
+            int result = Index - 1;
+            if (result < 0)
+            {
+                result = _textures.Count - 1;
             }
             return result;
         }

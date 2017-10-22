@@ -48,7 +48,7 @@ namespace TeraCAD
                 tooltip = string.Empty;
                 userInterface?.Update(Main._drawInterfaceGameTime);
             }
-        }
+		}
 
         internal virtual void UIDraw()
         {

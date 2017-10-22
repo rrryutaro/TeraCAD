@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A320C3E6-D8B8-443F-BB91-45DD199CBD37}</ProjectGuid>
+    <ProjectGuid>{624C20CF-DFF7-4E5C-8EDA-FB1AB04EFF7E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TeraCAD</RootNamespace>
@@ -33,15 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ImageList.cs" />
+    <Compile Include="DrawUtils.cs" />
+    <Compile Include="Tools\ToolImage.cs" />
+    <Compile Include="ToolUI\ImageUI.cs" />
+    <Compile Include="UIElements\UISlider.cs" />
+    <Compile Include="VectorUtils.cs" />
     <Compile Include="Shapes\Shape.cs" />
     <Compile Include="Snap.cs" />
-    <Compile Include="ToolUI\StampUI.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="FlyCam.cs" />
-    <Compile Include="Tools\ToolStamp.cs" />
     <Compile Include="TeraCADPlayer.cs" />
     <Compile Include="ModUtils.cs" />
-    <Compile Include="Tools\StampTool.cs" />
     <Compile Include="Tools\ToolBox.cs" />
     <Compile Include="ToolUI\ToolBoxUI.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
@@ -49,7 +52,6 @@
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="TeraCAD.cs" />
     <Compile Include="Tool.cs" />
-    <Compile Include="Tools\ToolDropper.cs" />
     <Compile Include="Tools\ToolShape.cs" />
     <Compile Include="UIElements\UIDragablePanel.cs" />
     <Compile Include="UIElements\UIGrid.cs" />
