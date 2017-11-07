@@ -73,7 +73,7 @@ namespace TeraCAD
                     point = point.Offset(width / 2, height);
                     break;
                 case SnapType.BottomRight:
-                    point = point.Offset(height, height);
+                    point = point.Offset(width, height);
                     break;
             }
             if (Main.LocalPlayer.gravDir == -1f)
