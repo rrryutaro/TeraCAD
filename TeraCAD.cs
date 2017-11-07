@@ -3,7 +3,6 @@ using Terraria;
 using Terraria.UI;
 using Terraria.ModLoader;
 using FKTModSettings;
-using TeraCAD.UIElements;
 
 namespace TeraCAD
 {
@@ -66,7 +65,7 @@ namespace TeraCAD
         private void LoadModSettings()
         {
             ModSetting setting = ModSettingsAPI.CreateModSettingConfig(this);
-            setting.AddBool("isCreative", "Creative mode", false);
+            setting.AddBool("isDrawShpes", "Display Shpes", false);
         }
 
         private void UpdateModSettings()
@@ -74,7 +73,7 @@ namespace TeraCAD
             ModSetting setting;
             if (ModSettingsAPI.TryGetModSetting(this, out setting))
             {
-                setting.Get("isCreative", ref Config.isCreative);
+                setting.Get("isDrawShpes", ref Config.isDrawShpes);
             }
         }
 

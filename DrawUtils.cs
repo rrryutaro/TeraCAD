@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
@@ -42,6 +40,17 @@ namespace TeraCAD
 			{
 				sb.DrawLine(center.ToRotationVector(radius, i * add), center.ToRotationVector(radius, (i + 1) * add), width, color);
 			}
+		}
+		public static void DrawEllipse(this SpriteBatch sb, Vector2 start, Vector2 end, Color color, int split = 36)
+		{
+			//float width = Math.Abs(start.X - end.X);
+			//float height = Math.Abs(start.Y - end.Y);
+			//Vector2 center = start.Offset(width / 2, height / 2);
+			//float add = 360f / split;
+			//for (int i = 0; i < split; i++)
+			//{
+			//	//sb.DrawLine(center.ToRotationVector(radius, i * add), center.ToRotationVector(radius, (i + 1) * add), width, color);
+			//}
 		}
 	}
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using TeraCAD.Shapes;
 
@@ -13,6 +8,8 @@ namespace TeraCAD.Tools
     public class ToolShape
     {
 		public static Shape shape;
+		public static List<Shape> hoverShapes = new List<Shape>();
+		public static List<Shape> selectedShapes = new List<Shape>();
 		public int step = 0;
         public List<Shape> list = new List<Shape>();
 
@@ -20,6 +17,12 @@ namespace TeraCAD.Tools
         {
             if (ToolBox.ContainsPoint(Main.MouseScreen))
                 return;
+
+			if (ToolBox.SelectedTool == ToolType.Select || ToolBox.SelectedTool == ToolType.Eraser)
+			{
+				UpdateSelectTool();
+				return;
+			}
 
             if (Main.mouseRight)
             {
@@ -65,7 +68,7 @@ namespace TeraCAD.Tools
 					{
 						if (ToolBox.SelectedTool == ToolType.Image)
 						{
-							(shape as ShapeImage).SetData();
+							(shape as ShapeImage)?.SetData();
 						}
 					}
                     break;
@@ -103,7 +106,31 @@ namespace TeraCAD.Tools
             }
         }
 
-        public List<Shape> GetNearShape(Vector2 point, int distance)
+		private void UpdateSelectTool()
+		{
+			hoverShapes.Clear();
+			hoverShapes.AddRange(GetNearShape(Main.MouseWorld, ToolBox.snapDistance));
+			if (ToolBox.SelectedTool == ToolType.Eraser)
+			{
+				if (Main.mouseLeft)
+				{
+					foreach (var hoverShape in hoverShapes)
+					{
+						list.Remove(hoverShape);
+					}
+				}
+			}
+
+			//foreach (var shape in GetNearShape(Main.MouseWorld, ToolBox.snapDistance))
+			//{
+			//	var shapeClone = shape.Clone();
+			//	shapeClone.width += 4;
+			//	shapeClone.color = Color.Yellow * 0.6f;
+			//	hoverShapes.Add(shapeClone);
+			//}
+		}
+
+		public List<Shape> GetNearShape(Vector2 point, int distance)
         {
             List<Shape> result = new List<Shape>();
             for (int i = list.Count - 1; 0 <= i; i--)
@@ -116,25 +143,24 @@ namespace TeraCAD.Tools
 
         public void Draw()
         {
-            if (ToolBox.SelectedTool == ToolType.Select)
-            {
-                foreach (var shape in GetNearShape(Main.MouseWorld, ToolBox.snapDistance))
-                {
-                    var shapeClone = shape.Clone();
-                    shapeClone.width += 4;
-                    shapeClone.color = Color.Yellow * 0.6f;
-                    shapeClone.DrawSelf(Main.spriteBatch);
-                }
-            }
             if (shape != null)
             {
                 shape.DrawSelf(Main.spriteBatch);
-				Tool.tooltip = shape.GetTooltip();
+
+				if (!ToolBox.ContainsPoint(Main.MouseScreen))
+					Tool.tooltip = shape.GetTooltip();
             }
         }
 
 		public void DrawShapes()
 		{
+			if (ToolBox.SelectedTool == ToolType.Select || ToolBox.SelectedTool == ToolType.Eraser)
+			{
+				foreach (var hoverShape in hoverShapes)
+				{
+					hoverShape.DrawSelfHover(Main.spriteBatch);
+				}
+			}
 			foreach (var x in list)
 			{
 				x.DrawSelf(Main.spriteBatch);

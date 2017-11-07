@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.UI;
-using TeraCAD.UIElements;
 using TeraCAD.Tools;
 
 namespace TeraCAD
@@ -17,20 +15,24 @@ namespace TeraCAD
         Circle,
         Ellipse,
         Arc,
-        Image
-    }
+        Image,
+		Eraser
+	}
 
     public static class ToolTypeUtils
     {
         public static bool isShapeTool(this ToolType type)
         {
-            bool result =
-                type == ToolType.Select ||
-                type == ToolType.Line ||
-                type == ToolType.Rect ||
-                type == ToolType.Circle ||
-				type == ToolType.Image;
-            return result;
+			bool result =
+				type == ToolType.Select ||
+				type == ToolType.Line ||
+				type == ToolType.Rect ||
+				type == ToolType.Circle ||
+				type == ToolType.Ellipse ||
+				type == ToolType.Image ||
+				type == ToolType.Eraser;
+
+			return result;
         }
     }
 
@@ -38,6 +40,7 @@ namespace TeraCAD
 	{
         public static ToolBox instance;
         private ToolBoxUI ui;
+		private ToolConfig toolConfig;
 		private ToolImage toolImage;
 
         public FlyCam flyCam;
@@ -51,11 +54,35 @@ namespace TeraCAD
         public static bool FlyCam { get{ return ToolBox.instance.ui.btnFlyCam != null && ToolBox.instance.ui.btnFlyCam.GetValue<bool>(); } }
         public static bool InfinityRange { get { return ToolBox.instance.ui.btnRange != null && ToolBox.instance.ui.btnRange.GetValue<bool>(); } }
 
-        public ToolBox() : base(typeof(ToolBoxUI))
+		public static Color LineColor
+		{
+			get
+			{
+				return ConfigUI.instance.Color;
+			}
+		}
+
+		public static int LineWidth
+		{
+			get
+			{
+				return ConfigUI.instance.LineWidth;
+			}
+		}
+
+		public static float Transmittance
+		{
+			get
+			{
+				return ConfigUI.instance.Transmittance;
+			}
+		}
+
+		public ToolBox() : base(typeof(ToolBoxUI))
 		{
             instance = this;
 			ui = uistate as ToolBoxUI;
-
+			toolConfig = new ToolConfig();
 			toolImage = new ToolImage();
 
 			flyCam = new FlyCam();
@@ -71,6 +98,10 @@ namespace TeraCAD
 			{
 				result = instance.ui.panelMain.ContainsPoint(point);
 			}
+			if (!result && ToolConfig.instance.visible)
+			{
+				result = ConfigUI.instance.panelMain.ContainsPoint(point);
+			}
 			if (!result && SelectedTool == ToolType.Image && ToolImage.instance.visible)
 			{
 				result = ImageUI.instance.panelMain.ContainsPoint(point);
@@ -80,18 +111,33 @@ namespace TeraCAD
 
 		internal static void Select(UISlotTool slot)
         {
-            if (SelectedSlot == slot)
+			if (slot == null && SelectedSlot != null)
+			{
+				SelectedSlot.isSelect = false;
+				SelectedSlot = null;
+				ToolShape.shape = null;
+				SelectedTool = ToolType.None;
+				ToolShape.shape = null;
+				if (UISlotImage.SelectedImage != null)
+				{
+					UISlotImage.SelectedImage.isSelect = false;
+					UISlotImage.SelectedImage = null;
+				}
+			}
+			else if (SelectedSlot == slot || slot == null)
             {
                 slot.isSelect = false;
                 SelectedSlot = null;
                 SelectedTool = ToolType.None;
+				ToolShape.shape = null;
             }
             else
             {
                 if (SelectedSlot != null)
                 {
                     SelectedSlot.isSelect = false;
-                }
+					ToolShape.shape = null;
+				}
                 SelectedTool = slot.Tool;
                 SelectedSlot = slot;
                 slot.isSelect = true;
@@ -104,7 +150,10 @@ namespace TeraCAD
             {
                 base.UIUpdate();
                 flyCam.Update();
-
+				if (toolConfig.visible)
+				{
+					toolConfig.UIUpdate();
+				}
                 if (SelectedTool.isShapeTool())
                 {
                     toolShape.Update();
@@ -124,10 +173,13 @@ namespace TeraCAD
         {
             try
             {
-                base.UIDraw();
-				if (visible)
+				if (visible || Config.isDrawShpes)
 				{
 					toolShape.DrawShapes();
+				}
+				if (toolConfig.visible)
+				{
+					toolConfig.UIDraw();
 				}
                 if (SelectedTool.isShapeTool())
                 {
@@ -141,6 +193,7 @@ namespace TeraCAD
 				{
 					DrawRangeRectangle();
 				}
+				base.UIDraw();
 			}
 			catch (Exception ex)
             {

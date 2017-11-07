@@ -62,12 +62,12 @@ namespace TeraCAD
 
             panelMain = new UIDragablePanel(true, true, true);
             panelMain.caption = caption;
-            panelMain.drawCaptionPosition = 1;
+            panelMain.drawCaptionPosition = 0;
             panelMain.SetPadding(6);
             panelMain.Left.Set(240f, 0f);
             panelMain.Top.Set(400f, 0f);
-            panelMain.Width.Set(165f, 0f);
-			panelMain.MinWidth.Set(165f, 0f);
+            panelMain.Width.Set(196f, 0f);
+			panelMain.MinWidth.Set(196f, 0f);
 			panelMain.MaxWidth.Set(Main.screenWidth, 0f);
 			panelMain.Height.Set(142, 0f);
 			panelMain.MinHeight.Set(110, 0f);
@@ -77,11 +77,13 @@ namespace TeraCAD
 			closeButton = new UIHoverImageButton(texture, "Close");
 			closeButton.OnClick += (a, b) => Show = false;
             closeButton.Left.Set(-20f, 1f);
-			closeButton.Top.Set(6f, 0f);
+			//closeButton.Top.Set(6f, 0f);
+			closeButton.Top.Set(0f, 0f);
 			panelMain.Append(closeButton);
 
-            float topPos = menuMargin + Main.fontMouseText.MeasureString(caption).Y;
-            float leftPos = 0;
+			//float topPos = menuMargin + Main.fontMouseText.MeasureString(caption).Y;
+			float topPos = 0;
+			float leftPos = 0;
 
 			//ボタン：レンジ矩形
 			texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/rangeRectangle");
@@ -180,14 +182,28 @@ namespace TeraCAD
             btnSnap.Top.Set(topPos, 0f);
             panelMain.Append(btnSnap);
 
-            topPos += menuIconSize + menuMargin;
+			//ボタン：コンフィグ
+			var btnConfig = new UIImageListButton(
+				new List<Texture2D>() {
+					Main.itemTexture[ItemID.Cog].Resize(menuIconSize),
+				},
+				new List<object>() { 0 },
+				new List<string>() { "Show Config" },
+				0);
+			btnConfig.OnClick += (a, b) => ConfigUI.instance.Show = !ConfigUI.instance.Show;
+			leftPos += menuMargin + menuIconSize;
+			btnConfig.Left.Set(leftPos, 0f);
+			btnConfig.Top.Set(topPos, 0f);
+			panelMain.Append(btnConfig);
+
+			topPos += menuIconSize + menuMargin;
 
             //ツールボックス
             panelTool = new UIPanel();
             panelTool.SetPadding(6);
             panelTool.Top.Set(topPos, 0f);
             panelTool.Width.Set(0, 1f);
-            panelTool.Height.Set(- menuMargin - topPos, 1f);
+            panelTool.Height.Set(-52, 1f);
             panelMain.Append(panelTool);
 
             gridTool = new UIGrid();
@@ -205,43 +221,41 @@ namespace TeraCAD
 
             //シェイプツール
             var imageList = new ImageList(ModLoader.GetMod("TeraCAD").GetTexture("ToolUI/ShapeTools"), 28, 28);
-            //var btnToolSelect = new UISlotTool(imageList[0], ToolType.Select, 1, "Selecct");
-            var btnToolLine = new UISlotTool(imageList[1], ToolType.Line, 1, "Line");
-            var btnToolRect = new UISlotTool(imageList[2], ToolType.Rect, 2, "Recangle");
-            var btnToolCircle = new UISlotTool(imageList[3], ToolType.Circle, 3, "Circle");
-            //btnToolSelect.OnClick += (a, b) => ToolBox.Select(btnToolSelect);
-            btnToolLine.OnClick += (a, b) => ToolBox.Select(btnToolLine);
-            btnToolRect.OnClick += (a, b) => ToolBox.Select(btnToolRect);
-            btnToolCircle.OnClick += (a, b) => ToolBox.Select(btnToolCircle);
-            //gridTool.Add(btnToolSelect);
-            gridTool.Add(btnToolLine);
-            gridTool.Add(btnToolRect);
-            gridTool.Add(btnToolCircle);
 
+			//選択ツール
+			var btnSelect = new UISlotTool(imageList[0], ToolType.Select, gridTool.Count, "Selecct");
+			btnSelect.OnClick += (a, b) => ToolBox.Select(btnSelect);
+			gridTool.Add(btnSelect);
+			//直線ツール
+			var btnLine = new UISlotTool(imageList[1], ToolType.Line, gridTool.Count, "Line");
+			btnLine.OnClick += (a, b) => ToolBox.Select(btnLine);
+			gridTool.Add(btnLine);
+			//矩形ツール
+			var btnRect = new UISlotTool(imageList[2], ToolType.Rect, gridTool.Count, "Recangle");
+			btnRect.OnClick += (a, b) => ToolBox.Select(btnRect);
+			gridTool.Add(btnRect);
+			//円ツール
+			var btnCircle = new UISlotTool(imageList[3], ToolType.Circle, gridTool.Count, "Circle");
+			btnCircle.OnClick += (a, b) => ToolBox.Select(btnCircle);
+			gridTool.Add(btnCircle);
+			//楕円ツール
+			//var btnEllipse = new UISlotTool(imageList[4], ToolType.Ellipse, gridTool.Count, "Ellipse");
+			//btnEllipse.OnClick += (a, b) => ToolBox.Select(btnEllipse);
+			//gridTool.Add(btnEllipse);
 			//イメージツール
-			var btnImage = new UISlotTool(Main.itemTexture[ItemID.TheCursedMan], ToolType.Image, 4, "Image");
+			var btnImage = new UISlotTool(Main.itemTexture[ItemID.TheCursedMan], ToolType.Image, gridTool.Count, "Image");
 			btnImage.OnClick += (a, b) =>
 			{
 				ToolBox.Select(btnImage);
 				ImageUI.instance.Show = btnImage.isSelect;
 			};
 			gridTool.Add(btnImage);
+			//削除ツール
+			var btnEraser = new UISlotTool(imageList[5], ToolType.Eraser, gridTool.Count, "Eraser");
+			btnEraser.OnClick += (a, b) => ToolBox.Select(btnEraser);
+			gridTool.Add(btnEraser);
 
-            ////スタンプツール、ドロッパーツール
-            //var slotStamp = new UISlotTool(Main.itemTexture[ItemID.Paintbrush].Resize(menuIconSize), ToolType.Stamp, "Currently, use is suspended due to license violation.");
-            //var slotDropper = new UISlotTool(Main.itemTexture[ItemID.EmptyDropper].Resize(menuIconSize), ToolType.Dropper, "Currently, use is suspended due to license violation.");
-            //slotStamp.OnClick += (a, b) =>
-            //{
-            //    ToolBox.Select(slotStamp);
-            //};
-            //slotDropper.OnClick += (a, b) =>
-            //{
-            //    ToolBox.Select(slotDropper);
-            //};
-            //gridTool.Add(slotStamp);
-            //gridTool.Add(slotDropper);
-
-            updateNeeded = true;
+			updateNeeded = true;
 		}
 
 		internal bool isDisplayRangeRectangle

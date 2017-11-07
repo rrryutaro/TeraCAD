@@ -1,14 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ModLoader;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using System;
-using Terraria.ID;
-using System.Linq;
-using System.Text;
-using Terraria.UI.Chat;
 
 namespace TeraCAD.UIElements
 {

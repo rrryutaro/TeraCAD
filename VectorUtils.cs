@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 
 namespace TeraCAD
 {
@@ -13,14 +10,30 @@ namespace TeraCAD
             Vector2 AB, AP;
             AB.X = posB.X - posA.X;
             AB.Y = posB.Y - posA.Y;
-            AP.X = Main.MouseWorld.X - posA.X;
-            AP.Y = Main.MouseWorld.Y - posA.Y;
+            AP.X = posP.X - posA.X;
+            AP.Y = posP.Y - posA.Y;
             double len = Math.Pow((AB.X * AB.X) + (AB.Y * AB.Y), 0.5);
             Vector2 nAB = new Vector2((float)(AB.X / len), (float)(AB.Y / len));
             double dist_AX = nAB.X * AP.X + nAB.Y * AP.Y;
             Vector2 result = new Vector2((float)(posA.X + (nAB.X * dist_AX)), (float)(posA.Y + (nAB.Y * dist_AX)));
             return result;
         }
+
+		public static float GetDistancePointToLine(Vector2 posP, Vector2 posA, Vector2 posB)
+		{
+			float result = float.MaxValue;
+			Vector2 AB, AP;
+			AB.X = posB.X - posA.X;
+			AB.Y = posB.Y - posA.Y;
+			AP.X = posP.X - posA.X;
+			AP.Y = posP.Y - posA.Y;
+
+			float D = Math.Abs(AB.X * AP.Y - AB.Y * AP.X);
+			float L = Vector2.Distance(posA, posB);
+			result = D / L;
+
+			return result;
+		}
 
 		public static bool LineSegmentsIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, out Vector2 intersection)
 		{

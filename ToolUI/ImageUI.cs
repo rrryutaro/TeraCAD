@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -67,7 +66,7 @@ namespace TeraCAD
             panelMain.caption = caption;
             panelMain.drawCaptionPosition = 1;
             panelMain.SetPadding(6);
-            panelMain.Left.Set(405f, 0f);
+            panelMain.Left.Set(438f, 0f);
             panelMain.Top.Set(400f, 0f);
             panelMain.Width.Set(300f, 0f);
 			panelMain.MinWidth.Set(300f, 0f);
@@ -141,6 +140,7 @@ namespace TeraCAD
             grid.SetScrollbar(scrollbar);
 
 			slider = new UISlider();
+			slider.Value = 0.8f;
 			leftPos += menuIconSize + menuMargin;
 			slider.Left.Set(leftPos, 0f);
 			slider.Top.Set(topPos, 0f);
@@ -170,25 +170,23 @@ namespace TeraCAD
 		{
 			if (File.Exists(imageFilePath))
 			{
-				try
+				grid.Clear();
+				foreach (var path in File.ReadAllLines(imageFilePath, Encoding.UTF8))
 				{
-					grid.Clear();
-					foreach (var path in File.ReadAllLines(imageFilePath, Encoding.UTF8))
+					try
 					{
 						using (var fs = new FileStream(path, FileMode.Open))
 						{
-							var slot = new UISlotImage(Texture2D.FromStream(Main.graphics.GraphicsDevice, fs), grid.Count, fs.Name);
+							var fileInfo = new FileInfo(fs.Name);
+							var slot = new UISlotImage(Texture2D.FromStream(Main.graphics.GraphicsDevice, fs), grid.Count, fileInfo.Name.Replace(fileInfo.Extension, ""));
 							grid._items.Add(slot);
 							grid._innerList.Append(slot);
 						}
 					}
-					grid.UpdateOrder();
-					grid._innerList.Recalculate();
+					catch { }
 				}
-				catch (Exception ex)
-				{
-					System.Diagnostics.Debug.WriteLine(ex.Message);
-				}
+				grid.UpdateOrder();
+				grid._innerList.Recalculate();
 			}
 		}
 

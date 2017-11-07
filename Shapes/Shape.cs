@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -14,7 +10,7 @@ namespace TeraCAD.Shapes
         Line,
         Rect,
         Circle,
-        Elipse,
+        Ellipse,
         Arc,
 		Image,
     }
@@ -29,10 +25,8 @@ namespace TeraCAD.Shapes
 
         public Shape()
         {
-            //color = Color.Black;
-            color = Color.Red;
-            width = 1;
-            //width = 16;
+            color = ToolBox.LineColor * ToolBox.Transmittance;
+            width = ToolBox.LineWidth;
         }
         public virtual void CopyFrom (Shape shape)
         {
@@ -50,7 +44,19 @@ namespace TeraCAD.Shapes
             return result;
         }
 
-        public Rectangle GetRect()
+		public ShapeLine[] GetLines()
+		{
+			ShapeLine[] result =
+			{
+				new ShapeLine(pointStart, new Vector2(pointEnd.X, pointStart.Y)),
+				new ShapeLine(pointStart, new Vector2(pointStart.X, pointEnd.Y)),
+				new ShapeLine(new Vector2(pointEnd.X, pointStart.Y), pointEnd),
+				new ShapeLine(new Vector2(pointStart.X, pointEnd.Y), pointEnd),
+			};
+			return result;
+		}
+
+		public Rectangle GetRect()
         {
             int x = (int)Math.Min(pointStart.X, pointEnd.X);
             int y = (int)Math.Min(pointStart.Y, pointEnd.Y);
@@ -62,16 +68,16 @@ namespace TeraCAD.Shapes
         }
         public virtual bool isNear(Vector2 point, int distance)
         {
-			bool result = false;
-			var nearPoint = VectorUtils.NearPoint(point, pointStart, pointEnd);
-			if (Vector2.Distance(point, nearPoint) <= distance)
-				result = VectorUtils.PointOnLine(pointStart, pointEnd, nearPoint);
-
+			bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
             return result;
         }
         public virtual void DrawSelf(SpriteBatch spriteBatch)
         {
         }
+		public virtual void DrawSelfHover(SpriteBatch spriteBatch)
+		{
+			DrawSelf(spriteBatch);
+		}
 		public virtual string GetTooltip()
 		{
 			string result;
@@ -81,7 +87,7 @@ namespace TeraCAD.Shapes
 		}
     }
 
-    class ShapeLine : Shape
+    public class ShapeLine : Shape
     {
         public ShapeLine() : base()
         {
@@ -99,22 +105,46 @@ namespace TeraCAD.Shapes
             result.CopyFrom(this);
             return result;
         }
-        public override void DrawSelf(SpriteBatch spriteBatch)
+		public override bool isNear(Vector2 point, int distance)
+		{
+			bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
+			if (result)
+			{
+				if (isHorizontal)
+				{
+					result = Math.Min(pointStart.X, pointEnd.X) <= point.X && point.X <= Math.Max(pointStart.X, pointEnd.X);
+				}
+				else if (isVertical)
+				{
+					result = Math.Min(pointStart.Y, pointEnd.Y) <= point.Y && point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
+				}
+				else
+				{
+					result = GetRect().Contains(point.ToPoint());
+				}
+			}
+			return result;
+		}
+		public override void DrawSelf(SpriteBatch spriteBatch)
         {
 			spriteBatch.DrawLine(pointStart, pointEnd, width, color);
+		}
+		public override void DrawSelfHover(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Yellow);
 		}
 		public bool isHorizontal
 		{
 			get
 			{
-				return pointStart.X == pointEnd.X;
+				return pointStart.Y == pointEnd.Y;
 			}
 		}
 		public bool isVertical
 		{
 			get
 			{
-				return pointStart.Y == pointEnd.Y;
+				return pointStart.X == pointEnd.X;
 			}
 		}
 		public int TileX
@@ -179,18 +209,6 @@ namespace TeraCAD.Shapes
             result.CopyFrom(this);
             return result;
         }
-        public ShapeLine[] GetLines()
-        {
-            ShapeLine[] result =
-            {
-                new ShapeLine(pointStart, new Vector2(pointEnd.X, pointStart.Y)),
-                new ShapeLine(pointStart, new Vector2(pointStart.X, pointEnd.Y)),
-                new ShapeLine(new Vector2(pointEnd.X, pointStart.Y), pointEnd),
-                new ShapeLine(new Vector2(pointStart.X, pointEnd.Y), pointEnd),
-            };
-            return result;
-        }
-
         public override bool isNear(Vector2 point, int distance)
         {
             bool result = false;
@@ -207,7 +225,11 @@ namespace TeraCAD.Shapes
 			//Utils.DrawRectangle(spriteBatch, pointStart, pointEnd, color, color, width);
 			spriteBatch.DrawRect(pointStart, pointEnd, width, color);
 		}
-    }
+		public override void DrawSelfHover(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Yellow);
+		}
+	}
 
 	class ShapeCircle : Shape
 	{
@@ -234,9 +256,42 @@ namespace TeraCAD.Shapes
 			result = $"{Math.Max(Math.Abs((int)pos.X), Math.Abs((int)pos.Y))}";
 			return result;
 		}
+		public override bool isNear(Vector2 point, int distance)
+		{
+			bool result = Math.Abs(Vector2.Distance(pointStart, pointEnd) - Vector2.Distance(pointStart, point)) <= distance;
+			return result;
+		}
 		public override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width, color);
+		}
+		public override void DrawSelfHover(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Yellow);
+		}
+	}
+
+	class ShapeEllipse : Shape
+	{
+		public ShapeEllipse() : base()
+		{
+			type = ShapeType.Ellipse;
+		}
+		public ShapeEllipse(Vector2 start, Vector2 end) : base()
+		{
+			type = ShapeType.Ellipse;
+			pointStart = start;
+			pointEnd = end;
+		}
+		public override Shape Clone()
+		{
+			ShapeEllipse result = new ShapeEllipse();
+			result.CopyFrom(this);
+			return result;
+		}
+		public override void DrawSelf(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawEllipse(pointStart, pointEnd, color);
 		}
 	}
 
@@ -269,6 +324,15 @@ namespace TeraCAD.Shapes
 			mode = shapeImage.mode;
 			transmittance = shapeImage.transmittance;
 		}
+		public override bool isNear(Vector2 point, int distance)
+		{
+			bool result =
+				Math.Min(pointStart.X, pointEnd.X) <= point.X &&
+				Math.Min(pointStart.Y, pointEnd.Y) <= point.Y &&
+				point.X <= Math.Max(pointStart.X, pointEnd.X) &&
+				point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
+			return result;
+		}
 		public void SetData()
 		{
 			pointStart = Snap.GetSnapPoint(ToolBox.snapType, -image.Width, -image.Height);
@@ -284,6 +348,16 @@ namespace TeraCAD.Shapes
 			if (mode == ImagePositionMode.World)
 				point -= Main.screenPosition;
 			Main.spriteBatch.Draw(image, point, Color.White * transmittance);
+		}
+		public override void DrawSelfHover(SpriteBatch spriteBatch)
+		{
+			Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Yellow * 0.6f);
+			foreach (var line in GetLines())
+			{
+				line.width = 4;
+				line.color = Color.Yellow;
+				line.DrawSelf(spriteBatch);
+			}
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace TeraCAD
             if (config.Load())
             {
                 config.Get("version", ref version);
-                config.Get("isCreative", ref isCreative);
+                config.Get("isDrawShpes", ref isDrawShpes);
             }
             else
             {
@@ -26,10 +26,10 @@ namespace TeraCAD
         internal static void SaveValues()
         {
             config.Put("version", version);
-            config.Put("isCreative", isCreative);
+            config.Put("isDrawShpes", isDrawShpes);
             config.Save();
         }
 
-        public static bool isCreative = false;
+        public static bool isDrawShpes = true;
 	}
 }

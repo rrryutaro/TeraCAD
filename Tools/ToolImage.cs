@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
 using Terraria;
-using Terraria.UI;
-using TeraCAD.UIElements;
-using TeraCAD.Tools;
 
 namespace TeraCAD
 {

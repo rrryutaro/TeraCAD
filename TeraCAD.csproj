@@ -35,8 +35,11 @@
   <ItemGroup>
     <Compile Include="ImageList.cs" />
     <Compile Include="DrawUtils.cs" />
+    <Compile Include="Tools\ToolConfig.cs" />
     <Compile Include="Tools\ToolImage.cs" />
+    <Compile Include="ToolUI\ConfigUI.cs" />
     <Compile Include="ToolUI\ImageUI.cs" />
+    <Compile Include="UIElements\UISliderColor.cs" />
     <Compile Include="UIElements\UISlider.cs" />
     <Compile Include="VectorUtils.cs" />
     <Compile Include="Shapes\Shape.cs" />

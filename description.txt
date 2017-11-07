@@ -7,14 +7,13 @@ Currently has the following functions
 - Function to draw Line, Rectangle, Circle
 - Function to place png images
 
-*Currently, it does not have the function to save or delete the placed one.
-*Creative mode of config setting is not functioning.
-*In the future, we will be able to place blocks and wallpaper in lines and rectangular areas.
+*Currently, there is no function to save what you placed
 
 - About Loading Images -
 Place the file "TeraCAD_Image.txt" in the "My Games\Terraria\ModLoader" folder.
 For the contents of the text file, please describe the path of the png file.
 Please save "TeraCAD_Image.txt" with UTF8.
+The maximum size of the png file is 2048 x 2048 pixels.
 
 *** Acknowledgments ***
 This Mod's code is based on jopojelly's HERO's Mod.

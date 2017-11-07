@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
 
@@ -10,13 +8,31 @@ namespace TeraCAD.UIElements
 {
     internal class UISlider : UIElement
     {
-		public float Value { get; set; }
 		public bool isDown;
 
-		public UISlider() : base()
+		public int min;
+		public int max;
+
+		public float Value{ get; set; }
+		public int ValueInt
 		{
+			get
+			{
+				int result = (int)(1 + (max - min) * Value);
+				if (result < min)
+					result = min;
+				if (max < result)
+					result = max;
+				return result;
+			}
+		}
+
+		public UISlider(int min = 1, int max = 100) : base()
+		{
+			this.min = min;
+			this.max = max;
 			Width.Set(Main.colorBarTexture.Width, 0f);
-			Height.Set(Main.colorBarTexture.Height, 0f);
+			Height.Set(Main.colorBarTexture.Height * 2, 0f);
 		}
 
 		public override void MouseDown(UIMouseEvent evt)

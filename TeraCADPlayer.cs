@@ -1,14 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
+﻿using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Newtonsoft.Json;
 
 namespace TeraCAD
 {
@@ -21,6 +14,12 @@ namespace TeraCAD
             if (TeraCAD.instance.ToggleHotKeyMain.JustPressed)
             {
                 ToolBoxUI.instance.Show = !ToolBoxUI.instance.Show;
+				if (!ToolBoxUI.instance.Show)
+				{
+					ToolBox.Select(null);
+					ConfigUI.instance.Show = false;
+					ImageUI.instance.Show = false;
+				}
             }
         }
 
@@ -46,12 +45,13 @@ namespace TeraCAD
         public override void OnEnterWorld(Player player)
         {
             ToolBoxUI.instance.InitializeUI();
+			ConfigUI.instance.InitializeUI();
 			ImageUI.instance.InitializeUI();
 
-			if (mainUIData != null)
-            {
-                ToolBoxUI.instance.Load(mainUIData);
-            }
+			//if (mainUIData != null)
+            //{
+            //    ToolBoxUI.instance.Load(mainUIData);
+            //}
         }
 
         public override void ResetEffects()
