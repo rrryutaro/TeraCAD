@@ -17,7 +17,8 @@ namespace TeraCAD
 				if (!ToolBoxUI.instance.Show)
 				{
 					ToolBox.Select(null);
-					ConfigUI.instance.Show = false;
+					LinePropertyUI.instance.Show = false;
+					SettingUI.instance.Show = false;
 					ImageUI.instance.Show = false;
 				}
             }
@@ -45,7 +46,8 @@ namespace TeraCAD
         public override void OnEnterWorld(Player player)
         {
             ToolBoxUI.instance.InitializeUI();
-			ConfigUI.instance.InitializeUI();
+			LinePropertyUI.instance.InitializeUI();
+			SettingUI.instance.InitializeUI();
 			ImageUI.instance.InitializeUI();
 
 			//if (mainUIData != null)
@@ -65,5 +67,5 @@ namespace TeraCAD
                 }
             }
         }
-    }
+	}
 }

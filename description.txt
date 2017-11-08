@@ -6,6 +6,7 @@ Currently has the following functions
 - Function to same as Fly Cam, Infinity Reach of HERO's Mod
 - Function to draw Line, Rectangle, Circle
 - Function to place png images
+- Function to parallel copy
 
 *Currently, there is no function to save what you placed
 

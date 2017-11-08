@@ -13,6 +13,8 @@ namespace TeraCAD.UIElements
 		public int min;
 		public int max;
 
+		public event Action<UISlider> OnChanged;
+
 		public float Value{ get; set; }
 		public int ValueInt
 		{
@@ -24,6 +26,10 @@ namespace TeraCAD.UIElements
 				if (max < result)
 					result = max;
 				return result;
+			}
+			set
+			{
+				Value = (float)value / (1 + (max - min));
 			}
 		}
 
@@ -61,6 +67,16 @@ namespace TeraCAD.UIElements
 					Value = 1f;
 				else
 					Value = (float)Math.Round(1f - (Main.colorBarTexture.Width - (pos.X - dim.X)) / Main.colorBarTexture.Width, 2);
+
+				Changed();
+			}
+		}
+
+		public virtual void Changed()
+		{
+			if (this.OnChanged != null)
+			{
+				this.OnChanged(this);
 			}
 		}
 

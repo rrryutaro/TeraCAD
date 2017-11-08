@@ -16,7 +16,10 @@ namespace TeraCAD
             {
                 config.Get("version", ref version);
                 config.Get("isDrawShpes", ref isDrawShpes);
-            }
+				config.Get("isDrawCursor", ref isDrawCursor);
+				config.Get("isDrawCursorSnap", ref isDrawCursorSnap);
+				config.Get("isBorderCursorNone", ref isBorderCursorNone);
+			}
             else
             {
                 SaveValues();
@@ -27,9 +30,15 @@ namespace TeraCAD
         {
             config.Put("version", version);
             config.Put("isDrawShpes", isDrawShpes);
-            config.Save();
+			config.Put("isDrawCursor", isDrawCursor);
+			config.Put("isDrawCursorSnap", isDrawCursorSnap);
+			config.Put("isBorderCursorNone", isBorderCursorNone);
+			config.Save();
         }
 
         public static bool isDrawShpes = true;
+		public static bool isDrawCursor = true;
+		public static bool isDrawCursorSnap = true;
+		public static bool isBorderCursorNone = false;
 	}
 }

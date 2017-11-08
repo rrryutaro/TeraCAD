@@ -72,12 +72,43 @@ namespace TeraCAD
 			return result;
 		}
 
-		public static float ToRotation(this Vector2 v1, Vector2 v2)
+		public static float GetRadian(this Vector2 v1, Vector2 v2)
 		{
-			float result;
-			float distance = Vector2.Distance(v1, v2);
-			Vector2 v3 = (v2 - v1) / distance;
-			result = (float)Math.Atan2((double)v3.Y, (double)v3.X);
+			float result = (float)Math.Atan2(v2.Y - v1.Y, v2.X - v1.X);
+			return result;
+		}
+
+		/// <summary>
+		/// v1からv2の点の向きを返す
+		/// </summary>
+		/// <returns>1:Left 2:Top 3:Right 4:Bottom 0:unknown</returns>
+		public static int GetDirection(this Vector2 v1, Vector2 v2)
+		{
+			int result = 0;
+			float degree = v1.GetRadian(v2).ToDegree();
+			if (135 <= degree || degree < -135)
+				result = 1;
+			else if (-135 <= degree && degree < -45)
+				result = 2;
+			else if (45 <= degree && degree < 135)
+				result = 4;
+			else if (-45 <= degree || degree < 45)
+				result = 3;
+			return result;
+		}
+
+		/// <summary>
+		/// 点(v1)が線分(start - end)の左右どちらの向きか
+		/// </summary>
+		/// <returns>1:左 2:右 0:線上</returns>
+		public static int GetDirection(this Vector2 v1, Vector2 start, Vector2 end)
+		{
+			int result = 0;
+			int n = (int)(v1.X * (start.Y - end.Y) + start.X * (end.Y - v1.Y) + end.X * (v1.Y - start.Y));
+			if (0 < n)
+				result = 1;
+			else if (n < 0)
+				result = 2;
 			return result;
 		}
 
@@ -100,6 +131,12 @@ namespace TeraCAD
 		public static float ToRadian(this float f)
 		{
 			float result = (float)(f * Math.PI / 180);
+			return result;
+		}
+
+		public static float ToDegree(this float f)
+		{
+			float result = (float)(f * 180 / Math.PI);
 			return result;
 		}
 	}

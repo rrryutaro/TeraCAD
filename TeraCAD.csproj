@@ -35,9 +35,11 @@
   <ItemGroup>
     <Compile Include="ImageList.cs" />
     <Compile Include="DrawUtils.cs" />
-    <Compile Include="Tools\ToolConfig.cs" />
+    <Compile Include="Tools\ToolSetting.cs" />
+    <Compile Include="Tools\ToolLineProperty.cs" />
     <Compile Include="Tools\ToolImage.cs" />
-    <Compile Include="ToolUI\ConfigUI.cs" />
+    <Compile Include="ToolUI\SettingUI.cs" />
+    <Compile Include="ToolUI\LinePropertyUI.cs" />
     <Compile Include="ToolUI\ImageUI.cs" />
     <Compile Include="UIElements\UISliderColor.cs" />
     <Compile Include="UIElements\UISlider.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="UIElements\UISlot.cs" />
     <Compile Include="UIElements\UIModState.cs" />
     <Compile Include="UIElements\UISplitterPanel.cs" />
-    <Compile Include="UIElements\UITextBox.cs" />
+    <Compile Include="UIElements\UIInputTextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">

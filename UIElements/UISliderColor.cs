@@ -14,6 +14,8 @@ namespace TeraCAD.UIElements
 		private ColorSlidersSet colorSet;
 		private int downIndex;
 
+		public event Action<UISliderColor> OnChanged;
+
 		public Color color
 		{
 			get
@@ -92,6 +94,16 @@ namespace TeraCAD.UIElements
 						break;
 				}
 				colorSet.SetHSL(hSLVector);
+
+				Changed();
+			}
+		}
+
+		public virtual void Changed()
+		{
+			if (this.OnChanged != null)
+			{
+				this.OnChanged(this);
 			}
 		}
 

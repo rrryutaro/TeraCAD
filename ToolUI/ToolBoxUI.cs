@@ -188,9 +188,9 @@ namespace TeraCAD
 					Main.itemTexture[ItemID.Cog].Resize(menuIconSize),
 				},
 				new List<object>() { 0 },
-				new List<string>() { "Show Config" },
+				new List<string>() { "Show Line Property" },
 				0);
-			btnConfig.OnClick += (a, b) => ConfigUI.instance.Show = !ConfigUI.instance.Show;
+			btnConfig.OnClick += (a, b) => LinePropertyUI.instance.Show = !LinePropertyUI.instance.Show;
 			leftPos += menuMargin + menuIconSize;
 			btnConfig.Left.Set(leftPos, 0f);
 			btnConfig.Top.Set(topPos, 0f);
@@ -254,6 +254,14 @@ namespace TeraCAD
 			var btnEraser = new UISlotTool(imageList[5], ToolType.Eraser, gridTool.Count, "Eraser");
 			btnEraser.OnClick += (a, b) => ToolBox.Select(btnEraser);
 			gridTool.Add(btnEraser);
+			//全削除ツール
+			var btnAllClear = new UISlotTool(Main.trashTexture.Resize(menuIconSize), ToolType.AllClear, gridTool.Count, "All Clear");
+			btnAllClear.OnClick += (a, b) => ToolBox.Select(btnAllClear);
+			gridTool.Add(btnAllClear);
+			//平行コピー
+			var btnParallelCopy = new UISlotTool(imageList[6], ToolType.ParallelCopy, gridTool.Count, "Parallel Copy");
+			btnParallelCopy.OnClick += (a, b) => ToolBox.Select(btnParallelCopy);
+			gridTool.Add(btnParallelCopy);
 
 			updateNeeded = true;
 		}
@@ -262,7 +270,7 @@ namespace TeraCAD
 		{
 			get
 			{
-				return btnRangeRect.GetValue<bool>();
+				return btnRangeRect?.GetValue<bool>() ?? false;
 			}
 		}
 

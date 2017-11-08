@@ -16,7 +16,9 @@ namespace TeraCAD
         Ellipse,
         Arc,
         Image,
-		Eraser
+		Eraser,
+		AllClear,
+		ParallelCopy
 	}
 
     public static class ToolTypeUtils
@@ -30,17 +32,29 @@ namespace TeraCAD
 				type == ToolType.Circle ||
 				type == ToolType.Ellipse ||
 				type == ToolType.Image ||
-				type == ToolType.Eraser;
+				type == ToolType.Eraser ||
+				type == ToolType.AllClear ||
+				type == ToolType.ParallelCopy;
 
 			return result;
         }
+
+		public static bool isSelect(this ToolType type)
+		{
+			bool result =
+				type == ToolType.Select ||
+				type == ToolType.Eraser ||
+				type == ToolType.ParallelCopy;
+			return result;
+		}
     }
 
     class ToolBox : Tool
 	{
         public static ToolBox instance;
         private ToolBoxUI ui;
-		private ToolConfig toolConfig;
+		private ToolLineProperty toolLineProperty;
+		private ToolSetting toolSetting;
 		private ToolImage toolImage;
 
         public FlyCam flyCam;
@@ -54,11 +68,14 @@ namespace TeraCAD
         public static bool FlyCam { get{ return ToolBox.instance.ui.btnFlyCam != null && ToolBox.instance.ui.btnFlyCam.GetValue<bool>(); } }
         public static bool InfinityRange { get { return ToolBox.instance.ui.btnRange != null && ToolBox.instance.ui.btnRange.GetValue<bool>(); } }
 
+		private static Color? backupMouseColor;
+		private static Color? backupMouseBorderColor;
+
 		public static Color LineColor
 		{
 			get
 			{
-				return ConfigUI.instance.Color;
+				return LinePropertyUI.instance.GetColor(LinePropertyTarget.Shapes);
 			}
 		}
 
@@ -66,15 +83,7 @@ namespace TeraCAD
 		{
 			get
 			{
-				return ConfigUI.instance.LineWidth;
-			}
-		}
-
-		public static float Transmittance
-		{
-			get
-			{
-				return ConfigUI.instance.Transmittance;
+				return LinePropertyUI.instance.GetLineWidth(LinePropertyTarget.Shapes);
 			}
 		}
 
@@ -82,14 +91,15 @@ namespace TeraCAD
 		{
             instance = this;
 			ui = uistate as ToolBoxUI;
-			toolConfig = new ToolConfig();
+			toolLineProperty = new ToolLineProperty();
+			toolSetting = new ToolSetting();
 			toolImage = new ToolImage();
 
 			flyCam = new FlyCam();
             toolShape = new ToolShape();
 
             SelectedTool = ToolType.None;
-        }
+		}
 
 		internal static bool ContainsPoint(Vector2 point)
 		{
@@ -98,9 +108,9 @@ namespace TeraCAD
 			{
 				result = instance.ui.panelMain.ContainsPoint(point);
 			}
-			if (!result && ToolConfig.instance.visible)
+			if (!result && ToolLineProperty.instance.visible)
 			{
-				result = ConfigUI.instance.panelMain.ContainsPoint(point);
+				result = LinePropertyUI.instance.panelMain.ContainsPoint(point);
 			}
 			if (!result && SelectedTool == ToolType.Image && ToolImage.instance.visible)
 			{
@@ -111,38 +121,76 @@ namespace TeraCAD
 
 		internal static void Select(UISlotTool slot)
         {
-			if (slot == null && SelectedSlot != null)
+			ToolShape.Clear();
+			if (UISlotImage.SelectedImage != null)
+			{
+				UISlotImage.SelectedImage.isSelect = false;
+				UISlotImage.SelectedImage = null;
+			}
+
+			if (slot == null)
+			{
+				if (SelectedSlot != null)
+				{
+					SelectedSlot.isSelect = false;
+					SelectedSlot = null;
+				}
+				SelectedTool = ToolType.None;
+			}
+			else if (SelectedSlot == slot)
 			{
 				SelectedSlot.isSelect = false;
 				SelectedSlot = null;
-				ToolShape.shape = null;
 				SelectedTool = ToolType.None;
-				ToolShape.shape = null;
-				if (UISlotImage.SelectedImage != null)
+			}
+			else
+			{
+				if (SelectedSlot != null)
 				{
-					UISlotImage.SelectedImage.isSelect = false;
-					UISlotImage.SelectedImage = null;
+					SelectedSlot.isSelect = false;
+					SelectedSlot = null;
+				}
+				SelectedTool = slot.Tool;
+                SelectedSlot = slot;
+				SelectedSlot.isSelect = true;
+			}
+
+			if (SelectedTool == ToolType.None)
+			{
+				if (backupMouseColor != null)
+				{
+					Main.mouseColor = (Color)backupMouseColor;
+					Main.MouseBorderColor = (Color)backupMouseBorderColor;
+					backupMouseColor = null;
+					backupMouseBorderColor = null;
 				}
 			}
-			else if (SelectedSlot == slot || slot == null)
-            {
-                slot.isSelect = false;
-                SelectedSlot = null;
-                SelectedTool = ToolType.None;
-				ToolShape.shape = null;
-            }
-            else
-            {
-                if (SelectedSlot != null)
-                {
-                    SelectedSlot.isSelect = false;
-					ToolShape.shape = null;
+			else
+			{
+				if (backupMouseColor == null && Config.isBorderCursorNone && !SelectedTool.isSelect())
+				{
+					backupMouseColor = Main.mouseColor;
+					backupMouseBorderColor = Main.MouseBorderColor;
+					Main.MouseBorderColor = Color.Transparent;
 				}
-                SelectedTool = slot.Tool;
-                SelectedSlot = slot;
-                slot.isSelect = true;
-            }
-        }
+				else if (SelectedTool.isSelect() && backupMouseColor != null)
+				{
+					Main.mouseColor = (Color)backupMouseColor;
+					Main.MouseBorderColor = (Color)backupMouseBorderColor;
+					backupMouseColor = null;
+					backupMouseBorderColor = null;
+				}
+			}
+
+			if (SelectedTool == ToolType.ParallelCopy)
+			{
+				SettingUI.instance.Show = true;
+			}
+			else
+			{
+				SettingUI.instance.Show = false;
+			}
+		}
 
         internal override void UIUpdate()
         {
@@ -150,9 +198,13 @@ namespace TeraCAD
             {
                 base.UIUpdate();
                 flyCam.Update();
-				if (toolConfig.visible)
+				if (toolLineProperty.visible)
 				{
-					toolConfig.UIUpdate();
+					toolLineProperty.UIUpdate();
+				}
+				if (toolSetting.visible)
+				{
+					toolSetting.UIUpdate();
 				}
                 if (SelectedTool.isShapeTool())
                 {
@@ -177,21 +229,25 @@ namespace TeraCAD
 				{
 					toolShape.DrawShapes();
 				}
-				if (toolConfig.visible)
-				{
-					toolConfig.UIDraw();
-				}
                 if (SelectedTool.isShapeTool())
                 {
                     toolShape.Draw();
                 }
+				if (ui.isDisplayRangeRectangle && !InfinityRange)
+				{
+					DrawRangeRectangle();
+				}
 				if (SelectedTool == ToolType.Image)
 				{
 					toolImage.UIDraw();
 				}
-				if (ui.isDisplayRangeRectangle && !InfinityRange)
+				if (toolSetting.visible)
 				{
-					DrawRangeRectangle();
+					toolSetting.UIDraw();
+				}
+				if (toolLineProperty.visible)
+				{
+					toolLineProperty.UIDraw();
 				}
 				base.UIDraw();
 			}

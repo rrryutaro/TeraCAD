@@ -25,7 +25,7 @@ namespace TeraCAD.Shapes
 
         public Shape()
         {
-            color = ToolBox.LineColor * ToolBox.Transmittance;
+            color = ToolBox.LineColor;
             width = ToolBox.LineWidth;
         }
         public virtual void CopyFrom (Shape shape)
@@ -76,7 +76,9 @@ namespace TeraCAD.Shapes
         }
 		public virtual void DrawSelfHover(SpriteBatch spriteBatch)
 		{
-			DrawSelf(spriteBatch);
+		}
+		public virtual void DrawSelfSelect(SpriteBatch spriteBatch)
+		{
 		}
 		public virtual string GetTooltip()
 		{
@@ -132,6 +134,10 @@ namespace TeraCAD.Shapes
 		public override void DrawSelfHover(SpriteBatch spriteBatch)
 		{
 			spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Yellow);
+		}
+		public override void DrawSelfSelect(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Green);
 		}
 		public bool isHorizontal
 		{
@@ -197,7 +203,7 @@ namespace TeraCAD.Shapes
 		}
 	}
 
-    class ShapeRect : Shape
+    public class ShapeRect : Shape
     {
         public ShapeRect()
         {
@@ -228,6 +234,10 @@ namespace TeraCAD.Shapes
 		public override void DrawSelfHover(SpriteBatch spriteBatch)
 		{
 			spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Yellow);
+		}
+		public override void DrawSelfSelect(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Green);
 		}
 	}
 
@@ -268,6 +278,10 @@ namespace TeraCAD.Shapes
 		public override void DrawSelfHover(SpriteBatch spriteBatch)
 		{
 			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Yellow);
+		}
+		public override void DrawSelfSelect(SpriteBatch spriteBatch)
+		{
+			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Green);
 		}
 	}
 
@@ -356,6 +370,16 @@ namespace TeraCAD.Shapes
 			{
 				line.width = 4;
 				line.color = Color.Yellow;
+				line.DrawSelf(spriteBatch);
+			}
+		}
+		public override void DrawSelfSelect(SpriteBatch spriteBatch)
+		{
+			Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Green * 0.6f);
+			foreach (var line in GetLines())
+			{
+				line.width = 4;
+				line.color = Color.Green;
 				line.DrawSelf(spriteBatch);
 			}
 		}
