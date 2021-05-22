@@ -12,8 +12,8 @@ using TeraCAD.UIElements;
 namespace TeraCAD
 {
     class ToolBoxUI : UIModState
-	{
-		static internal ToolBoxUI instance;
+    {
+        static internal ToolBoxUI instance;
 
         static internal int menuIconSize = 28;
         static internal int menuMargin = 4;
@@ -22,8 +22,8 @@ namespace TeraCAD
         internal UIPanel panelTool;
         internal UIGrid gridTool;
         internal UIHoverImageButton closeButton;
-		internal UIImageListButton btnRangeRect;
-		internal UIImageListButton btnFlyCam;
+        internal UIImageListButton btnRangeRect;
+        internal UIImageListButton btnFlyCam;
         internal UIImageListButton btnRange;
         internal UIImageListButton btnSnap;
         internal UIImageListButton btnPaint;
@@ -33,28 +33,28 @@ namespace TeraCAD
         internal string caption = $"TeraCAD v{TeraCAD.instance.Version}";
 
         private bool show;
-		public bool Show
+        public bool Show
         {
-			get { return show; }
-			set
-			{
-				if (value)
-				{
-					Append(panelMain);
-				}
-				else
-				{
-					RemoveChild(panelMain);
-				}
+            get { return show; }
+            set
+            {
+                if (value)
+                {
+                    Append(panelMain);
+                }
+                else
+                {
+                    RemoveChild(panelMain);
+                }
                 show = value;
                 TeraCAD.instance.toolMain.visible = value;
-			}
-		}
+            }
+        }
 
-		public ToolBoxUI(UserInterface ui) : base(ui)
-		{
-			instance = this;
-		}
+        public ToolBoxUI(UserInterface ui) : base(ui)
+        {
+            instance = this;
+        }
 
         public void InitializeUI()
         {
@@ -67,43 +67,43 @@ namespace TeraCAD
             panelMain.Left.Set(240f, 0f);
             panelMain.Top.Set(400f, 0f);
             panelMain.Width.Set(196f, 0f);
-			panelMain.MinWidth.Set(196f, 0f);
-			panelMain.MaxWidth.Set(Main.screenWidth, 0f);
-			panelMain.Height.Set(142, 0f);
-			panelMain.MinHeight.Set(110, 0f);
-			panelMain.MaxHeight.Set(Main.screenHeight, 0f);
+            panelMain.MinWidth.Set(196f, 0f);
+            panelMain.MaxWidth.Set(Main.screenWidth, 0f);
+            panelMain.Height.Set(142, 0f);
+            panelMain.MinHeight.Set(110, 0f);
+            panelMain.MaxHeight.Set(Main.screenHeight, 0f);
 
-			Texture2D texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/closeButton");
-			closeButton = new UIHoverImageButton(texture, "Close");
-			closeButton.OnClick += (a, b) => Show = false;
+            Texture2D texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/closeButton");
+            closeButton = new UIHoverImageButton(texture, "Close");
+            closeButton.OnClick += (a, b) => Show = false;
             closeButton.Left.Set(-20f, 1f);
-			//closeButton.Top.Set(6f, 0f);
-			closeButton.Top.Set(0f, 0f);
-			panelMain.Append(closeButton);
+            //closeButton.Top.Set(6f, 0f);
+            closeButton.Top.Set(0f, 0f);
+            panelMain.Append(closeButton);
 
-			//float topPos = menuMargin + Main.fontMouseText.MeasureString(caption).Y;
-			float topPos = 0;
-			float leftPos = 0;
+            //float topPos = menuMargin + Main.fontMouseText.MeasureString(caption).Y;
+            float topPos = 0;
+            float leftPos = 0;
 
-			//ボタン：レンジ矩形
-			texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/rangeRectangle");
-			btnRangeRect = new UIImageListButton(
-				new List<Texture2D>() { texture, texture },
-				new List<object>() { true, false },
-				new List<string>() { "Display range rectangle: On", "Display range rectangle: Off" },
-				1);
-			btnRangeRect.OnClick += (a, b) =>
-			{
-				btnRangeRect.NextIamge();
-				btnRangeRect.visibilityActive = btnRangeRect.visibilityInactive = btnRangeRect.GetValue<bool>() ? 1.0f : 0.4f;
-			};
-			leftPos += menuMargin;
-			btnRangeRect.Left.Set(leftPos, 0f);
-			btnRangeRect.Top.Set(topPos, 0f);
-			panelMain.Append(btnRangeRect);
+            //ボタン：レンジ矩形
+            texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/rangeRectangle");
+            btnRangeRect = new UIImageListButton(
+                new List<Texture2D>() { texture, texture },
+                new List<object>() { true, false },
+                new List<string>() { "Display range rectangle: On", "Display range rectangle: Off" },
+                1);
+            btnRangeRect.OnClick += (a, b) =>
+            {
+                btnRangeRect.NextIamge();
+                btnRangeRect.visibilityActive = btnRangeRect.visibilityInactive = btnRangeRect.GetValue<bool>() ? 1.0f : 0.4f;
+            };
+            leftPos += menuMargin;
+            btnRangeRect.Left.Set(leftPos, 0f);
+            btnRangeRect.Top.Set(topPos, 0f);
+            panelMain.Append(btnRangeRect);
 
-			//ボタン：フライカメラ
-			btnFlyCam = new UIImageListButton(
+            //ボタン：フライカメラ
+            btnFlyCam = new UIImageListButton(
                 new List<Texture2D>() {
                     Main.itemTexture[ItemID.AngelWings].Resize(menuIconSize),
                     Main.itemTexture[ItemID.AngelWings].Resize(menuIconSize),
@@ -117,8 +117,8 @@ namespace TeraCAD
                 FlyCam.Enabled = btnFlyCam.GetValue<bool>();
                 btnFlyCam.visibilityActive = btnFlyCam.visibilityInactive = btnFlyCam.GetValue<bool>() ? 1.0f : 0.4f;
             };
-			leftPos += menuMargin + menuIconSize;
-			btnFlyCam.Left.Set(leftPos, 0f);
+            leftPos += menuMargin + menuIconSize;
+            btnFlyCam.Left.Set(leftPos, 0f);
             btnFlyCam.Top.Set(topPos, 0f);
             panelMain.Append(btnFlyCam);
 
@@ -182,21 +182,21 @@ namespace TeraCAD
             btnSnap.Top.Set(topPos, 0f);
             panelMain.Append(btnSnap);
 
-			//ボタン：コンフィグ
-			var btnConfig = new UIImageListButton(
-				new List<Texture2D>() {
-					Main.itemTexture[ItemID.Cog].Resize(menuIconSize),
-				},
-				new List<object>() { 0 },
-				new List<string>() { "Show Line Property" },
-				0);
-			btnConfig.OnClick += (a, b) => LinePropertyUI.instance.Show = !LinePropertyUI.instance.Show;
-			leftPos += menuMargin + menuIconSize;
-			btnConfig.Left.Set(leftPos, 0f);
-			btnConfig.Top.Set(topPos, 0f);
-			panelMain.Append(btnConfig);
+            //ボタン：コンフィグ
+            var btnConfig = new UIImageListButton(
+                new List<Texture2D>() {
+                    Main.itemTexture[ItemID.Cog].Resize(menuIconSize),
+                },
+                new List<object>() { 0 },
+                new List<string>() { "Show Line Property" },
+                0);
+            btnConfig.OnClick += (a, b) => LinePropertyUI.instance.Show = !LinePropertyUI.instance.Show;
+            leftPos += menuMargin + menuIconSize;
+            btnConfig.Left.Set(leftPos, 0f);
+            btnConfig.Top.Set(topPos, 0f);
+            panelMain.Append(btnConfig);
 
-			topPos += menuIconSize + menuMargin;
+            topPos += menuIconSize + menuMargin;
 
             //ツールボックス
             panelTool = new UIPanel();
@@ -222,69 +222,69 @@ namespace TeraCAD
             //シェイプツール
             var imageList = new ImageList(ModLoader.GetMod("TeraCAD").GetTexture("ToolUI/ShapeTools"), 28, 28);
 
-			//選択ツール
-			var btnSelect = new UISlotTool(imageList[0], ToolType.Select, gridTool.Count, "Selecct");
-			btnSelect.OnClick += (a, b) => ToolBox.Select(btnSelect);
-			gridTool.Add(btnSelect);
-			//直線ツール
-			var btnLine = new UISlotTool(imageList[1], ToolType.Line, gridTool.Count, "Line");
-			btnLine.OnClick += (a, b) => ToolBox.Select(btnLine);
-			gridTool.Add(btnLine);
-			//矩形ツール
-			var btnRect = new UISlotTool(imageList[2], ToolType.Rect, gridTool.Count, "Recangle");
-			btnRect.OnClick += (a, b) => ToolBox.Select(btnRect);
-			gridTool.Add(btnRect);
-			//円ツール
-			var btnCircle = new UISlotTool(imageList[3], ToolType.Circle, gridTool.Count, "Circle");
-			btnCircle.OnClick += (a, b) => ToolBox.Select(btnCircle);
-			gridTool.Add(btnCircle);
-			//楕円ツール
-			//var btnEllipse = new UISlotTool(imageList[4], ToolType.Ellipse, gridTool.Count, "Ellipse");
-			//btnEllipse.OnClick += (a, b) => ToolBox.Select(btnEllipse);
-			//gridTool.Add(btnEllipse);
-			//イメージツール
-			var btnImage = new UISlotTool(Main.itemTexture[ItemID.TheCursedMan], ToolType.Image, gridTool.Count, "Image");
-			btnImage.OnClick += (a, b) =>
-			{
-				ToolBox.Select(btnImage);
-				ImageUI.instance.Show = btnImage.isSelect;
-			};
-			gridTool.Add(btnImage);
-			//削除ツール
-			var btnEraser = new UISlotTool(imageList[5], ToolType.Eraser, gridTool.Count, "Eraser");
-			btnEraser.OnClick += (a, b) => ToolBox.Select(btnEraser);
-			gridTool.Add(btnEraser);
-			//全削除ツール
-			var btnAllClear = new UISlotTool(Main.trashTexture.Resize(menuIconSize), ToolType.AllClear, gridTool.Count, "All Clear");
-			btnAllClear.OnClick += (a, b) => ToolBox.Select(btnAllClear);
-			gridTool.Add(btnAllClear);
-			//平行コピー
-			var btnParallelCopy = new UISlotTool(imageList[6], ToolType.ParallelCopy, gridTool.Count, "Parallel Copy");
-			btnParallelCopy.OnClick += (a, b) => ToolBox.Select(btnParallelCopy);
-			gridTool.Add(btnParallelCopy);
+            //選択ツール
+            var btnSelect = new UISlotTool(imageList[0], ToolType.Select, gridTool.Count, "Selecct");
+            btnSelect.OnClick += (a, b) => ToolBox.Select(btnSelect);
+            gridTool.Add(btnSelect);
+            //直線ツール
+            var btnLine = new UISlotTool(imageList[1], ToolType.Line, gridTool.Count, "Line");
+            btnLine.OnClick += (a, b) => ToolBox.Select(btnLine);
+            gridTool.Add(btnLine);
+            //矩形ツール
+            var btnRect = new UISlotTool(imageList[2], ToolType.Rect, gridTool.Count, "Recangle");
+            btnRect.OnClick += (a, b) => ToolBox.Select(btnRect);
+            gridTool.Add(btnRect);
+            //円ツール
+            var btnCircle = new UISlotTool(imageList[3], ToolType.Circle, gridTool.Count, "Circle");
+            btnCircle.OnClick += (a, b) => ToolBox.Select(btnCircle);
+            gridTool.Add(btnCircle);
+            //楕円ツール
+            //var btnEllipse = new UISlotTool(imageList[4], ToolType.Ellipse, gridTool.Count, "Ellipse");
+            //btnEllipse.OnClick += (a, b) => ToolBox.Select(btnEllipse);
+            //gridTool.Add(btnEllipse);
+            //イメージツール
+            var btnImage = new UISlotTool(Main.itemTexture[ItemID.TheCursedMan], ToolType.Image, gridTool.Count, "Image");
+            btnImage.OnClick += (a, b) =>
+            {
+                ToolBox.Select(btnImage);
+                ImageUI.instance.Show = btnImage.isSelect;
+            };
+            gridTool.Add(btnImage);
+            //削除ツール
+            var btnEraser = new UISlotTool(imageList[5], ToolType.Eraser, gridTool.Count, "Eraser");
+            btnEraser.OnClick += (a, b) => ToolBox.Select(btnEraser);
+            gridTool.Add(btnEraser);
+            //全削除ツール
+            var btnAllClear = new UISlotTool(Main.trashTexture.Resize(menuIconSize), ToolType.AllClear, gridTool.Count, "All Clear");
+            btnAllClear.OnClick += (a, b) => ToolBox.Select(btnAllClear);
+            gridTool.Add(btnAllClear);
+            //平行コピー
+            var btnParallelCopy = new UISlotTool(imageList[6], ToolType.ParallelCopy, gridTool.Count, "Parallel Copy");
+            btnParallelCopy.OnClick += (a, b) => ToolBox.Select(btnParallelCopy);
+            gridTool.Add(btnParallelCopy);
 
-			updateNeeded = true;
-		}
-
-		internal bool isDisplayRangeRectangle
-		{
-			get
-			{
-				return btnRangeRect?.GetValue<bool>() ?? false;
-			}
-		}
-
-		internal void UpdateGrid()
-		{
-			if (!updateNeeded) { return; }
-			updateNeeded = false;
+            updateNeeded = true;
         }
 
-		public override void Update(GameTime gameTime)
-		{
-			base.Update(gameTime);
+        internal bool isDisplayRangeRectangle
+        {
+            get
+            {
+                return btnRangeRect?.GetValue<bool>() ?? false;
+            }
+        }
+
+        internal void UpdateGrid()
+        {
+            if (!updateNeeded) { return; }
+            updateNeeded = false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
             UpdateGrid();
-		}
+        }
 
         public override TagCompound Save()
         {

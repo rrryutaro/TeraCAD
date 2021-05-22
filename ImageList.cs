@@ -32,6 +32,6 @@ namespace TeraCAD
                 return listTexture[index];
             }
         }
-            
+
     }
 }

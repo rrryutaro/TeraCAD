@@ -56,10 +56,10 @@ namespace TeraCAD.UIElements
             spriteBatch.Draw(this._textures[Index], GetCenterPosition(GetDimensions().ToRectangle(), this._textures[Index]), Color.White * (base.IsMouseHovering ? this.visibilityActive : this.visibilityInactive));
             if (IsMouseHovering)
             {
-				if (_hoverTexts.Count == 1)
-					Tool.tooltip = _hoverTexts[Index];
-				else
-					Tool.tooltip = $"Current:{_hoverTexts[Index]}{Environment.NewLine}Next:{GetNextTooltip()}";
+                if (_hoverTexts.Count == 1)
+                    Tool.tooltip = _hoverTexts[Index];
+                else
+                    Tool.tooltip = $"Current:{_hoverTexts[Index]}{Environment.NewLine}Next:{GetNextTooltip()}";
             }
         }
 

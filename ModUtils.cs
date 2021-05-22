@@ -104,7 +104,7 @@ namespace TeraCAD
         {
             Texture2D result = texture;
 
-            float max =  Math.Max(texture.Width, texture.Height);
+            float max = Math.Max(texture.Width, texture.Height);
             float scale = size / max;
             int width = (int)(texture.Width * scale);
             int height = (int)(texture.Height * scale);
@@ -124,9 +124,9 @@ namespace TeraCAD
             return position;
         }
 
-		public static TSource FindMin<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
-		{
-			return self.First(c => selector(c).Equals(self.Min(selector)));
-		}
+        public static TSource FindMin<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
+        {
+            return self.First(c => selector(c).Equals(self.Min(selector)));
+        }
     }
 }
