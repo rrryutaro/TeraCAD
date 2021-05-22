@@ -12,7 +12,7 @@ namespace TeraCAD.Shapes
         Circle,
         Ellipse,
         Arc,
-		Image,
+        Image,
     }
 
     public class Shape
@@ -28,7 +28,7 @@ namespace TeraCAD.Shapes
             color = ToolBox.LineColor;
             width = ToolBox.LineWidth;
         }
-        public virtual void CopyFrom (Shape shape)
+        public virtual void CopyFrom(Shape shape)
         {
             type = shape.type;
             pointStart = shape.pointStart;
@@ -44,19 +44,19 @@ namespace TeraCAD.Shapes
             return result;
         }
 
-		public ShapeLine[] GetLines()
-		{
-			ShapeLine[] result =
-			{
-				new ShapeLine(pointStart, new Vector2(pointEnd.X, pointStart.Y)),
-				new ShapeLine(pointStart, new Vector2(pointStart.X, pointEnd.Y)),
-				new ShapeLine(new Vector2(pointEnd.X, pointStart.Y), pointEnd),
-				new ShapeLine(new Vector2(pointStart.X, pointEnd.Y), pointEnd),
-			};
-			return result;
-		}
+        public ShapeLine[] GetLines()
+        {
+            ShapeLine[] result =
+            {
+                new ShapeLine(pointStart, new Vector2(pointEnd.X, pointStart.Y)),
+                new ShapeLine(pointStart, new Vector2(pointStart.X, pointEnd.Y)),
+                new ShapeLine(new Vector2(pointEnd.X, pointStart.Y), pointEnd),
+                new ShapeLine(new Vector2(pointStart.X, pointEnd.Y), pointEnd),
+            };
+            return result;
+        }
 
-		public Rectangle GetRect()
+        public Rectangle GetRect()
         {
             int x = (int)Math.Min(pointStart.X, pointEnd.X);
             int y = (int)Math.Min(pointStart.Y, pointEnd.Y);
@@ -68,25 +68,25 @@ namespace TeraCAD.Shapes
         }
         public virtual bool isNear(Vector2 point, int distance)
         {
-			bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
+            bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
             return result;
         }
         public virtual void DrawSelf(SpriteBatch spriteBatch)
         {
         }
-		public virtual void DrawSelfHover(SpriteBatch spriteBatch)
-		{
-		}
-		public virtual void DrawSelfSelect(SpriteBatch spriteBatch)
-		{
-		}
-		public virtual string GetTooltip()
-		{
-			string result;
-			var pos = (pointStart - pointEnd) / 16;
-			result = $"{Math.Abs((int)pos.X)} x {Math.Abs((int)pos.Y)}";
-			return result;
-		}
+        public virtual void DrawSelfHover(SpriteBatch spriteBatch)
+        {
+        }
+        public virtual void DrawSelfSelect(SpriteBatch spriteBatch)
+        {
+        }
+        public virtual string GetTooltip()
+        {
+            string result;
+            var pos = (pointStart - pointEnd) / 16;
+            result = $"{Math.Abs((int)pos.X)} x {Math.Abs((int)pos.Y)}";
+            return result;
+        }
     }
 
     public class ShapeLine : Shape
@@ -107,101 +107,101 @@ namespace TeraCAD.Shapes
             result.CopyFrom(this);
             return result;
         }
-		public override bool isNear(Vector2 point, int distance)
-		{
-			bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
-			if (result)
-			{
-				if (isHorizontal)
-				{
-					result = Math.Min(pointStart.X, pointEnd.X) <= point.X && point.X <= Math.Max(pointStart.X, pointEnd.X);
-				}
-				else if (isVertical)
-				{
-					result = Math.Min(pointStart.Y, pointEnd.Y) <= point.Y && point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
-				}
-				else
-				{
-					result = GetRect().Contains(point.ToPoint());
-				}
-			}
-			return result;
-		}
-		public override void DrawSelf(SpriteBatch spriteBatch)
+        public override bool isNear(Vector2 point, int distance)
         {
-			spriteBatch.DrawLine(pointStart, pointEnd, width, color);
-		}
-		public override void DrawSelfHover(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Yellow);
-		}
-		public override void DrawSelfSelect(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Green);
-		}
-		public bool isHorizontal
-		{
-			get
-			{
-				return pointStart.Y == pointEnd.Y;
-			}
-		}
-		public bool isVertical
-		{
-			get
-			{
-				return pointStart.X == pointEnd.X;
-			}
-		}
-		public int TileX
-		{
-			get
-			{
-				return (int)Math.Abs(pointStart.X - pointEnd.X) / ModUtils.tileSize;
-			}
-		}
-		public int TileY
-		{
-			get
-			{
-				return (int)Math.Abs(pointStart.Y - pointEnd.Y) / ModUtils.tileSize;
-			}
-		}
-		public Tile[,] GetLineToTiles()
-		{
-			Tile[,] result;
-			//
-			if (isHorizontal)
-			{
-				int maxX = TileX;
-				result = new Tile[maxX, 1];
-				for (int x = 0; x < maxX; x++)
-				{
-					var tile = result[x, 0];
-					tile.active(true);
-					tile.type = 1;
-				}
-			}
-			else if (isVertical)
-			{
-				int maxY = TileY;
-				result = new Tile[1, maxY];
-				for (int y = 0; y < maxY; y++)
-				{
-					var tile = result[0, y];
-					tile.active(true);
-					tile.type = 1;
-				}
-			}
-			else
-			{
-				int maxX = TileX;
-				int maxY = TileY;
-				result = new Tile[maxX, maxY];
-			}
-			return result;
-		}
-	}
+            bool result = VectorUtils.GetDistancePointToLine(point, pointStart, pointEnd) <= distance;
+            if (result)
+            {
+                if (isHorizontal)
+                {
+                    result = Math.Min(pointStart.X, pointEnd.X) <= point.X && point.X <= Math.Max(pointStart.X, pointEnd.X);
+                }
+                else if (isVertical)
+                {
+                    result = Math.Min(pointStart.Y, pointEnd.Y) <= point.Y && point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
+                }
+                else
+                {
+                    result = GetRect().Contains(point.ToPoint());
+                }
+            }
+            return result;
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawLine(pointStart, pointEnd, width, color);
+        }
+        public override void DrawSelfHover(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Yellow);
+        }
+        public override void DrawSelfSelect(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawLine(pointStart, pointEnd, width + 4, Color.Green);
+        }
+        public bool isHorizontal
+        {
+            get
+            {
+                return pointStart.Y == pointEnd.Y;
+            }
+        }
+        public bool isVertical
+        {
+            get
+            {
+                return pointStart.X == pointEnd.X;
+            }
+        }
+        public int TileX
+        {
+            get
+            {
+                return (int)Math.Abs(pointStart.X - pointEnd.X) / ModUtils.tileSize;
+            }
+        }
+        public int TileY
+        {
+            get
+            {
+                return (int)Math.Abs(pointStart.Y - pointEnd.Y) / ModUtils.tileSize;
+            }
+        }
+        public Tile[,] GetLineToTiles()
+        {
+            Tile[,] result;
+            //
+            if (isHorizontal)
+            {
+                int maxX = TileX;
+                result = new Tile[maxX, 1];
+                for (int x = 0; x < maxX; x++)
+                {
+                    var tile = result[x, 0];
+                    tile.active(true);
+                    tile.type = 1;
+                }
+            }
+            else if (isVertical)
+            {
+                int maxY = TileY;
+                result = new Tile[1, maxY];
+                for (int y = 0; y < maxY; y++)
+                {
+                    var tile = result[0, y];
+                    tile.active(true);
+                    tile.type = 1;
+                }
+            }
+            else
+            {
+                int maxX = TileX;
+                int maxY = TileY;
+                result = new Tile[maxX, maxY];
+            }
+            return result;
+        }
+    }
 
     public class ShapeRect : Shape
     {
@@ -228,160 +228,160 @@ namespace TeraCAD.Shapes
         }
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
-			//Utils.DrawRectangle(spriteBatch, pointStart, pointEnd, color, color, width);
-			spriteBatch.DrawRect(pointStart, pointEnd, width, color);
-		}
-		public override void DrawSelfHover(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Yellow);
-		}
-		public override void DrawSelfSelect(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Green);
-		}
-	}
+            //Utils.DrawRectangle(spriteBatch, pointStart, pointEnd, color, color, width);
+            spriteBatch.DrawRect(pointStart, pointEnd, width, color);
+        }
+        public override void DrawSelfHover(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Yellow);
+        }
+        public override void DrawSelfSelect(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawRect(pointStart, pointEnd, width + 4, Color.Green);
+        }
+    }
 
-	class ShapeCircle : Shape
-	{
-		public ShapeCircle() : base()
-		{
-			type = ShapeType.Circle;
-		}
-		public ShapeCircle(Vector2 start, Vector2 end) : base()
-		{
-			type = ShapeType.Circle;
-			pointStart = start;
-			pointEnd = end;
-		}
-		public override Shape Clone()
-		{
-			ShapeCircle result = new ShapeCircle();
-			result.CopyFrom(this);
-			return result;
-		}
-		public override string GetTooltip()
-		{
-			string result;
-			var pos = (pointStart - pointEnd) / 16;
-			result = $"{Math.Max(Math.Abs((int)pos.X), Math.Abs((int)pos.Y))}";
-			return result;
-		}
-		public override bool isNear(Vector2 point, int distance)
-		{
-			bool result = Math.Abs(Vector2.Distance(pointStart, pointEnd) - Vector2.Distance(pointStart, point)) <= distance;
-			return result;
-		}
-		public override void DrawSelf(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width, color);
-		}
-		public override void DrawSelfHover(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Yellow);
-		}
-		public override void DrawSelfSelect(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Green);
-		}
-	}
+    class ShapeCircle : Shape
+    {
+        public ShapeCircle() : base()
+        {
+            type = ShapeType.Circle;
+        }
+        public ShapeCircle(Vector2 start, Vector2 end) : base()
+        {
+            type = ShapeType.Circle;
+            pointStart = start;
+            pointEnd = end;
+        }
+        public override Shape Clone()
+        {
+            ShapeCircle result = new ShapeCircle();
+            result.CopyFrom(this);
+            return result;
+        }
+        public override string GetTooltip()
+        {
+            string result;
+            var pos = (pointStart - pointEnd) / 16;
+            result = $"{Math.Max(Math.Abs((int)pos.X), Math.Abs((int)pos.Y))}";
+            return result;
+        }
+        public override bool isNear(Vector2 point, int distance)
+        {
+            bool result = Math.Abs(Vector2.Distance(pointStart, pointEnd) - Vector2.Distance(pointStart, point)) <= distance;
+            return result;
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width, color);
+        }
+        public override void DrawSelfHover(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Yellow);
+        }
+        public override void DrawSelfSelect(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawCircle(pointStart, pointStart.ToDistance(pointEnd), width + 4, Color.Green);
+        }
+    }
 
-	class ShapeEllipse : Shape
-	{
-		public ShapeEllipse() : base()
-		{
-			type = ShapeType.Ellipse;
-		}
-		public ShapeEllipse(Vector2 start, Vector2 end) : base()
-		{
-			type = ShapeType.Ellipse;
-			pointStart = start;
-			pointEnd = end;
-		}
-		public override Shape Clone()
-		{
-			ShapeEllipse result = new ShapeEllipse();
-			result.CopyFrom(this);
-			return result;
-		}
-		public override void DrawSelf(SpriteBatch spriteBatch)
-		{
-			spriteBatch.DrawEllipse(pointStart, pointEnd, color);
-		}
-	}
+    class ShapeEllipse : Shape
+    {
+        public ShapeEllipse() : base()
+        {
+            type = ShapeType.Ellipse;
+        }
+        public ShapeEllipse(Vector2 start, Vector2 end) : base()
+        {
+            type = ShapeType.Ellipse;
+            pointStart = start;
+            pointEnd = end;
+        }
+        public override Shape Clone()
+        {
+            ShapeEllipse result = new ShapeEllipse();
+            result.CopyFrom(this);
+            return result;
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawEllipse(pointStart, pointEnd, color);
+        }
+    }
 
-	class ShapeImage : Shape
-	{
-		public Texture2D image;
-		public ImagePositionMode mode;
-		public float transmittance;
+    class ShapeImage : Shape
+    {
+        public Texture2D image;
+        public ImagePositionMode mode;
+        public float transmittance;
 
-		public ShapeImage() : base()
-		{
-			type = ShapeType.Image;
-		}
-		public ShapeImage(UISlotImage slot) : base()
-		{
-			type = ShapeType.Image;
-			image = slot.image;
-		}
-		public override Shape Clone()
-		{
-			ShapeImage result = new ShapeImage();
-			result.CopyFrom(this);
-			return result;
-		}
-		public override void CopyFrom(Shape shape)
-		{
-			base.CopyFrom(shape);
-			var shapeImage = shape as ShapeImage;
-			image = shapeImage.image;
-			mode = shapeImage.mode;
-			transmittance = shapeImage.transmittance;
-		}
-		public override bool isNear(Vector2 point, int distance)
-		{
-			bool result =
-				Math.Min(pointStart.X, pointEnd.X) <= point.X &&
-				Math.Min(pointStart.Y, pointEnd.Y) <= point.Y &&
-				point.X <= Math.Max(pointStart.X, pointEnd.X) &&
-				point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
-			return result;
-		}
-		public void SetData()
-		{
-			pointStart = Snap.GetSnapPoint(ToolBox.snapType, -image.Width, -image.Height);
-			pointEnd = pointStart.Offset(image.Width, image.Height);
-			mode = ImageUI.instance.ImagePositionMode;
-			transmittance = ImageUI.instance.Transmittance;
-			if (mode == ImagePositionMode.Screen)
-				pointStart -= Main.screenPosition;
-		}
-		public override void DrawSelf(SpriteBatch spriteBatch)
-		{
-			var point = pointStart;
-			if (mode == ImagePositionMode.World)
-				point -= Main.screenPosition;
-			Main.spriteBatch.Draw(image, point, Color.White * transmittance);
-		}
-		public override void DrawSelfHover(SpriteBatch spriteBatch)
-		{
-			Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Yellow * 0.6f);
-			foreach (var line in GetLines())
-			{
-				line.width = 4;
-				line.color = Color.Yellow;
-				line.DrawSelf(spriteBatch);
-			}
-		}
-		public override void DrawSelfSelect(SpriteBatch spriteBatch)
-		{
-			Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Green * 0.6f);
-			foreach (var line in GetLines())
-			{
-				line.width = 4;
-				line.color = Color.Green;
-				line.DrawSelf(spriteBatch);
-			}
-		}
-	}
+        public ShapeImage() : base()
+        {
+            type = ShapeType.Image;
+        }
+        public ShapeImage(UISlotImage slot) : base()
+        {
+            type = ShapeType.Image;
+            image = slot.image;
+        }
+        public override Shape Clone()
+        {
+            ShapeImage result = new ShapeImage();
+            result.CopyFrom(this);
+            return result;
+        }
+        public override void CopyFrom(Shape shape)
+        {
+            base.CopyFrom(shape);
+            var shapeImage = shape as ShapeImage;
+            image = shapeImage.image;
+            mode = shapeImage.mode;
+            transmittance = shapeImage.transmittance;
+        }
+        public override bool isNear(Vector2 point, int distance)
+        {
+            bool result =
+                Math.Min(pointStart.X, pointEnd.X) <= point.X &&
+                Math.Min(pointStart.Y, pointEnd.Y) <= point.Y &&
+                point.X <= Math.Max(pointStart.X, pointEnd.X) &&
+                point.Y <= Math.Max(pointStart.Y, pointEnd.Y);
+            return result;
+        }
+        public void SetData()
+        {
+            pointStart = Snap.GetSnapPoint(ToolBox.snapType, -image.Width, -image.Height);
+            pointEnd = pointStart.Offset(image.Width, image.Height);
+            mode = ImageUI.instance.ImagePositionMode;
+            transmittance = ImageUI.instance.Transmittance;
+            if (mode == ImagePositionMode.Screen)
+                pointStart -= Main.screenPosition;
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            var point = pointStart;
+            if (mode == ImagePositionMode.World)
+                point -= Main.screenPosition;
+            Main.spriteBatch.Draw(image, point, Color.White * transmittance);
+        }
+        public override void DrawSelfHover(SpriteBatch spriteBatch)
+        {
+            Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Yellow * 0.6f);
+            foreach (var line in GetLines())
+            {
+                line.width = 4;
+                line.color = Color.Yellow;
+                line.DrawSelf(spriteBatch);
+            }
+        }
+        public override void DrawSelfSelect(SpriteBatch spriteBatch)
+        {
+            Main.spriteBatch.Draw(Main.magicPixel, GetRect(), Color.Green * 0.6f);
+            foreach (var line in GetLines())
+            {
+                line.width = 4;
+                line.color = Color.Green;
+                line.DrawSelf(spriteBatch);
+            }
+        }
+    }
 }

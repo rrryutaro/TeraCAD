@@ -1,4 +1,6 @@
-﻿TeraCAD:
+﻿* This explanation is translated from Japanese by Google Translate.
+
+TeraCAD:
 This Mod aims to make it possible to build like CAD.
 
 Currently has the following functions
@@ -17,7 +19,7 @@ Please save "TeraCAD_Image.txt" with UTF8.
 The maximum size of the png file is 2048 x 2048 pixels.
 
 *** Acknowledgments ***
-This Mod's code is based on jopojelly's HERO's Mod.
+Most of this Mod's UI code is based on jopojelly's Recipe Browser.
 I am grateful to Mr. jopojelly for publishing a great code.
-In addition, Mod Settings uses Mod Settings Configurator.
-I am grateful to Mr. Flashkirby99 for making the setting of Mod easy.
+Also, some code uses HERO's Mod code.
+Therefore, this mod inherits the license of HERO's mod.

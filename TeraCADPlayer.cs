@@ -14,13 +14,13 @@ namespace TeraCAD
             if (TeraCAD.instance.ToggleHotKeyMain.JustPressed)
             {
                 ToolBoxUI.instance.Show = !ToolBoxUI.instance.Show;
-				if (!ToolBoxUI.instance.Show)
-				{
-					ToolBox.Select(null);
-					LinePropertyUI.instance.Show = false;
-					SettingUI.instance.Show = false;
-					ImageUI.instance.Show = false;
-				}
+                if (!ToolBoxUI.instance.Show)
+                {
+                    ToolBox.Select(null);
+                    LinePropertyUI.instance.Show = false;
+                    SettingUI.instance.Show = false;
+                    ImageUI.instance.Show = false;
+                }
             }
         }
 
@@ -46,11 +46,11 @@ namespace TeraCAD
         public override void OnEnterWorld(Player player)
         {
             ToolBoxUI.instance.InitializeUI();
-			LinePropertyUI.instance.InitializeUI();
-			SettingUI.instance.InitializeUI();
-			ImageUI.instance.InitializeUI();
+            LinePropertyUI.instance.InitializeUI();
+            SettingUI.instance.InitializeUI();
+            ImageUI.instance.InitializeUI();
 
-			//if (mainUIData != null)
+            //if (mainUIData != null)
             //{
             //    ToolBoxUI.instance.Load(mainUIData);
             //}
@@ -67,5 +67,5 @@ namespace TeraCAD
                 }
             }
         }
-	}
+    }
 }

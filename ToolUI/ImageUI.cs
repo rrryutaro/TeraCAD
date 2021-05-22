@@ -16,8 +16,8 @@ using TeraCAD.Shapes;
 namespace TeraCAD
 {
     class ImageUI : UIModState
-	{
-		static internal ImageUI instance;
+    {
+        static internal ImageUI instance;
 
         static internal int menuIconSize = 28;
         static internal int menuMargin = 4;
@@ -27,36 +27,36 @@ namespace TeraCAD
         internal UIGrid grid;
         internal UIHoverImageButton closeButton;
         internal UIImageListButton btnLoad;
-		internal UIImageListButton btnPositionMode;
-		internal UISlider slider;
+        internal UIImageListButton btnPositionMode;
+        internal UISlider slider;
 
-		internal bool updateNeeded;
+        internal bool updateNeeded;
 
         internal string caption = $"";
 
         private bool show;
-		public bool Show
+        public bool Show
         {
-			get { return show; }
-			set
-			{
-				if (value)
-				{
-					Append(panelMain);
-				}
-				else
-				{
-					RemoveChild(panelMain);
-				}
+            get { return show; }
+            set
+            {
+                if (value)
+                {
+                    Append(panelMain);
+                }
+                else
+                {
+                    RemoveChild(panelMain);
+                }
                 show = value;
-				ToolImage.instance.visible = value;
-			}
-		}
+                ToolImage.instance.visible = value;
+            }
+        }
 
-		public ImageUI(UserInterface ui) : base(ui)
-		{
-			instance = this;
-		}
+        public ImageUI(UserInterface ui) : base(ui)
+        {
+            instance = this;
+        }
 
         public void InitializeUI()
         {
@@ -69,58 +69,58 @@ namespace TeraCAD
             panelMain.Left.Set(438f, 0f);
             panelMain.Top.Set(400f, 0f);
             panelMain.Width.Set(300f, 0f);
-			panelMain.MinWidth.Set(300f, 0f);
-			panelMain.MaxWidth.Set(Main.screenWidth, 0f);
-			panelMain.Height.Set(210, 0f);
-			panelMain.MinHeight.Set(210, 0f);
-			panelMain.MaxHeight.Set(Main.screenHeight, 0f);
+            panelMain.MinWidth.Set(300f, 0f);
+            panelMain.MaxWidth.Set(Main.screenWidth, 0f);
+            panelMain.Height.Set(210, 0f);
+            panelMain.MinHeight.Set(210, 0f);
+            panelMain.MaxHeight.Set(Main.screenHeight, 0f);
 
-			Texture2D texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/closeButton");
-			closeButton = new UIHoverImageButton(texture, "Close");
-			closeButton.OnClick += (a, b) => Show = false;
+            Texture2D texture = ModLoader.GetMod("TeraCAD").GetTexture("UIElements/closeButton");
+            closeButton = new UIHoverImageButton(texture, "Close");
+            closeButton.OnClick += (a, b) => Show = false;
             closeButton.Left.Set(-20f, 1f);
-			closeButton.Top.Set(6f, 0f);
-			panelMain.Append(closeButton);
+            closeButton.Top.Set(6f, 0f);
+            panelMain.Append(closeButton);
 
             float topPos = 0;
             float leftPos = menuMargin;
 
-			//ボタン：ロード
-			btnLoad = new UIImageListButton(
+            //ボタン：ロード
+            btnLoad = new UIImageListButton(
                 new List<Texture2D>() {
                     Main.itemTexture[ItemID.AlphabetStatueL].Resize(menuIconSize)
                 },
                 new List<object>() { 0 },
                 new List<string>() { "Load image" },
                 0);
-			var btn = btnLoad;
-			btn.OnClick += (a, b) => LoadImage();
+            var btn = btnLoad;
+            btn.OnClick += (a, b) => LoadImage();
             leftPos += menuMargin;
-			btn.Left.Set(leftPos, 0f);
-			btn.Top.Set(topPos, 0f);
+            btn.Left.Set(leftPos, 0f);
+            btn.Top.Set(topPos, 0f);
             panelMain.Append(btn);
 
-			//ボタン：配置モード
-			btnPositionMode = new UIImageListButton(
-				new List<Texture2D>() {
-					Main.itemTexture[ItemID.AlphabetStatueW].Resize(menuIconSize),
-					Main.itemTexture[ItemID.AlphabetStatueS].Resize(menuIconSize)
-				},
-				new List<object>() { ImagePositionMode.World, ImagePositionMode.Screen },
-				new List<string>() { "Image position: World", "Image position: Screen" },
-				0);
-			btn = btnPositionMode;
-			btn.OnClick += (a, b) => btn.NextIamge();
-			leftPos += menuIconSize + menuMargin;
-			btn.Left.Set(leftPos, 0f);
-			btn.Top.Set(topPos, 0f);
-			panelMain.Append(btn);
+            //ボタン：配置モード
+            btnPositionMode = new UIImageListButton(
+                new List<Texture2D>() {
+                    Main.itemTexture[ItemID.AlphabetStatueW].Resize(menuIconSize),
+                    Main.itemTexture[ItemID.AlphabetStatueS].Resize(menuIconSize)
+                },
+                new List<object>() { ImagePositionMode.World, ImagePositionMode.Screen },
+                new List<string>() { "Image position: World", "Image position: Screen" },
+                0);
+            btn = btnPositionMode;
+            btn.OnClick += (a, b) => btn.NextIamge();
+            leftPos += menuIconSize + menuMargin;
+            btn.Left.Set(leftPos, 0f);
+            btn.Top.Set(topPos, 0f);
+            panelMain.Append(btn);
 
-			//ツールボックス
-			panelGrid = new UIPanel();
-			var panel = panelGrid;
+            //ツールボックス
+            panelGrid = new UIPanel();
+            var panel = panelGrid;
 
-			panel.SetPadding(6);
+            panel.SetPadding(6);
             panel.Top.Set(32, 0f);
             panel.Width.Set(0, 1f);
             panel.Height.Set(-40, 1f);
@@ -139,75 +139,75 @@ namespace TeraCAD
             panel.Append(scrollbar);
             grid.SetScrollbar(scrollbar);
 
-			slider = new UISlider();
-			slider.Value = 0.8f;
-			leftPos += menuIconSize + menuMargin;
-			slider.Left.Set(leftPos, 0f);
-			slider.Top.Set(topPos, 0f);
-			panelMain.Append(slider);
+            slider = new UISlider();
+            slider.Value = 0.8f;
+            leftPos += menuIconSize + menuMargin;
+            slider.Left.Set(leftPos, 0f);
+            slider.Top.Set(topPos, 0f);
+            panelMain.Append(slider);
 
             updateNeeded = true;
-		}
-
-		public ImagePositionMode ImagePositionMode
-		{
-			get
-			{
-				return btnPositionMode.GetValue<ImagePositionMode>();
-			}
-		}
-
-		public float Transmittance
-		{
-			get
-			{
-				return 1f - slider.Value;
-			}
-		}
-
-		private static string imageFilePath = $@"{Main.SavePath}\TeraCAD_Image.txt";
-		private void LoadImage()
-		{
-			if (File.Exists(imageFilePath))
-			{
-				grid.Clear();
-				foreach (var path in File.ReadAllLines(imageFilePath, Encoding.UTF8))
-				{
-					try
-					{
-						using (var fs = new FileStream(path, FileMode.Open))
-						{
-							var fileInfo = new FileInfo(fs.Name);
-							var slot = new UISlotImage(Texture2D.FromStream(Main.graphics.GraphicsDevice, fs), grid.Count, fileInfo.Name.Replace(fileInfo.Extension, ""));
-							grid._items.Add(slot);
-							grid._innerList.Append(slot);
-						}
-					}
-					catch { }
-				}
-				grid.UpdateOrder();
-				grid._innerList.Recalculate();
-			}
-		}
-
-		internal void UpdateGrid()
-		{
-			if (!updateNeeded) { return; }
-			updateNeeded = false;
         }
 
-		public override void Update(GameTime gameTime)
-		{
-			base.Update(gameTime);
+        public ImagePositionMode ImagePositionMode
+        {
+            get
+            {
+                return btnPositionMode.GetValue<ImagePositionMode>();
+            }
+        }
+
+        public float Transmittance
+        {
+            get
+            {
+                return 1f - slider.Value;
+            }
+        }
+
+        private static string imageFilePath = $@"{Main.SavePath}\TeraCAD_Image.txt";
+        private void LoadImage()
+        {
+            if (File.Exists(imageFilePath))
+            {
+                grid.Clear();
+                foreach (var path in File.ReadAllLines(imageFilePath, Encoding.UTF8))
+                {
+                    try
+                    {
+                        using (var fs = new FileStream(path, FileMode.Open))
+                        {
+                            var fileInfo = new FileInfo(fs.Name);
+                            var slot = new UISlotImage(Texture2D.FromStream(Main.graphics.GraphicsDevice, fs), grid.Count, fileInfo.Name.Replace(fileInfo.Extension, ""));
+                            grid._items.Add(slot);
+                            grid._innerList.Append(slot);
+                        }
+                    }
+                    catch { }
+                }
+                grid.UpdateOrder();
+                grid._innerList.Recalculate();
+            }
+        }
+
+        internal void UpdateGrid()
+        {
+            if (!updateNeeded) { return; }
+            updateNeeded = false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
             UpdateGrid();
 
-			if (slider.IsMouseHovering || slider.isDown)
-			{
-				Tool.tooltip = $"Transmittance: {slider.Value * 100}%";
-			}
-		}
+            if (slider.IsMouseHovering || slider.isDown)
+            {
+                Tool.tooltip = $"Transmittance: {slider.Value * 100}%";
+            }
+        }
 
-		public override TagCompound Save()
+        public override TagCompound Save()
         {
             TagCompound result = base.Save();
 
@@ -230,52 +230,52 @@ namespace TeraCAD
 
     public class UISlotImage : UISlot
     {
-		public static UISlotImage SelectedImage;
-		public Texture2D image;
-		public Vector2 position;
-		public ImagePositionMode mode;
-		public float transmittance;
-		public UISlotImage(Texture2D texture, int sortOrder, string tooltip) : base(texture.Resize(100), sortOrder, tooltip)
+        public static UISlotImage SelectedImage;
+        public Texture2D image;
+        public Vector2 position;
+        public ImagePositionMode mode;
+        public float transmittance;
+        public UISlotImage(Texture2D texture, int sortOrder, string tooltip) : base(texture.Resize(100), sortOrder, tooltip)
         {
-			image = texture;
-		}
+            image = texture;
+        }
 
-		public new UISlotImage Clone()
-		{
-			UISlotImage result = new UISlotImage(image, sortOrder, tooltip);
-			result.position = position;
-			result.mode = mode;
-			return result;
-		}
+        public new UISlotImage Clone()
+        {
+            UISlotImage result = new UISlotImage(image, sortOrder, tooltip);
+            result.position = position;
+            result.mode = mode;
+            return result;
+        }
 
-		public override void Click(UIMouseEvent evt)
-		{
-			if (SelectedImage == this)
-			{
-				this.isSelect = false;
-				SelectedImage = null;
-				if (ToolBox.SelectedTool == ToolType.Image)
-				{
-					ToolShape.shape = null;
-				}
-			}
-			else
-			{
-				if (SelectedImage != null)
-					SelectedImage.isSelect = false;
-				this.isSelect = true;
-				SelectedImage = this;
-				if (ToolBox.SelectedTool == ToolType.Image)
-				{
-					ToolShape.shape = new ShapeImage(this);
-				}
-			}
-		}
-	}
+        public override void Click(UIMouseEvent evt)
+        {
+            if (SelectedImage == this)
+            {
+                this.isSelect = false;
+                SelectedImage = null;
+                if (ToolBox.SelectedTool == ToolType.Image)
+                {
+                    ToolShape.shape = null;
+                }
+            }
+            else
+            {
+                if (SelectedImage != null)
+                    SelectedImage.isSelect = false;
+                this.isSelect = true;
+                SelectedImage = this;
+                if (ToolBox.SelectedTool == ToolType.Image)
+                {
+                    ToolShape.shape = new ShapeImage(this);
+                }
+            }
+        }
+    }
 
-	public enum ImagePositionMode
-	{
-		World,
-		Screen,
-	}
+    public enum ImagePositionMode
+    {
+        World,
+        Screen,
+    }
 }

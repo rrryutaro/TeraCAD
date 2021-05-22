@@ -1,8 +1,9 @@
 ﻿author = R
-version = 0.0.3.0
+version = 0.2
 displayName = TeraCAD
 homepage = https://forums.terraria.org/index.php?threads/teracad.62502/
-weakReferences = FKTModSettings
-buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, unused\*
-includePDB = false
-languageVersion = 6
+hideCode = false
+hideResources = false
+includeSource = true
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
+includePDB = true
