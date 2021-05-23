@@ -32,8 +32,6 @@ namespace TeraCAD.Tools
         {
             if (cursorShape == null || cursorSnapShape == null)
             {
-                Main.MouseBorderColor = Color.Transparent;
-                Main.mouseColor = Color.Transparent;
                 cursorShape = new ShapeRect();
                 cursorSnapShape = new ShapeRect();
                 cursorShape.width = LinePropertyUI.instance.GetLineWidth(LinePropertyTarget.Cursor);

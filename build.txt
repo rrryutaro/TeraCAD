@@ -1,5 +1,5 @@
 ﻿author = R
-version = 0.2
+version = 0.2.1
 displayName = TeraCAD
 homepage = https://forums.terraria.org/index.php?threads/teracad.62502/
 hideCode = false
