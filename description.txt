@@ -1,6 +1,10 @@
-﻿* This explanation is translated from Japanese by Google Translate.
+﻿[c/FF0000:This description]
+[c/00FFFF:Translated from Japanese by Google Translate.]
 
-TeraCAD:
+[c/FF0000:v0.2 -> v0.2.1]
+Fixed an issue where the cursor was initialized.
+
+[c/00FF00:TeraCAD:]
 This Mod aims to make it possible to build like CAD.
 
 Currently has the following functions
@@ -18,7 +22,7 @@ For the contents of the text file, please describe the path of the png file.
 Please save "TeraCAD_Image.txt" with UTF8.
 The maximum size of the png file is 2048 x 2048 pixels.
 
-*** Acknowledgments ***
+[c/C71585:*** Acknowledgments ***]
 Most of this Mod's UI code is based on jopojelly's Recipe Browser.
 I am grateful to Mr. jopojelly for publishing a great code.
 Also, some code uses HERO's Mod code.
